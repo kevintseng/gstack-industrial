@@ -1,0 +1,202 @@
+{
+  "matchers": [
+    {
+      "skill": "brainstorming",
+      "priority": 1,
+      "triggers": {
+        "keywords": ["brainstorm", "idea", "worth building", "should i", "is it feasible"],
+        "phase": ["think"]
+      },
+      "explanation": "Brainstorm ideas with structured thinking"
+    },
+    {
+      "skill": "writing-plans",
+      "priority": 2,
+      "triggers": {
+        "keywords": ["plan", "implement", "approach", "architecture", "break down"],
+        "phase": ["plan"],
+        "gitStatus": ["clean"]
+      },
+      "explanation": "Create step-by-step implementation plan"
+    },
+    {
+      "skill": "executing-plans",
+      "priority": 3,
+      "triggers": {
+        "keywords": ["execute", "start implementation", "begin coding"],
+        "phase": ["build"],
+        "filePatterns": ["docs/plans/*.md", "plan.md"]
+      },
+      "explanation": "Execute implementation plan step-by-step"
+    },
+    {
+      "skill": "sa:comprehensive-code-review",
+      "priority": 4,
+      "triggers": {
+        "keywords": ["review", "check code", "audit", "verify implementation"],
+        "phase": ["review"],
+        "gitStatus": ["dirty"],
+        "uncommittedFiles": { "min": 3 }
+      },
+      "explanation": "Run comprehensive code review with Reality Check"
+    },
+    {
+      "skill": "systematic-debugging",
+      "priority": 5,
+      "triggers": {
+        "keywords": ["debug", "error", "failing", "bug", "broken", "fix"],
+        "phase": ["test"],
+        "filePatterns": ["**/*.test.*", "**/*.spec.*"]
+      },
+      "explanation": "Systematic root cause analysis for bugs"
+    },
+    {
+      "skill": "find-bugs",
+      "priority": 6,
+      "triggers": {
+        "keywords": ["find bugs", "security", "vulnerabilities", "code quality"],
+        "phase": ["review"]
+      },
+      "explanation": "Find bugs, security vulnerabilities, and code quality issues"
+    },
+    {
+      "skill": "verification-before-completion",
+      "priority": 7,
+      "triggers": {
+        "keywords": ["done", "finished", "complete", "ready"],
+        "phase": ["review", "ship"],
+        "gitStatus": ["dirty", "clean"]
+      },
+      "explanation": "Anti-hallucination verification gate before claiming done"
+    },
+    {
+      "skill": "finishing-a-development-branch",
+      "priority": 8,
+      "triggers": {
+        "keywords": ["merge", "ship", "create pr", "ready to merge", "pull request"],
+        "phase": ["ship"],
+        "gitStatus": ["clean", "dirty"],
+        "branch": { "not": ["main", "master", "develop"] }
+      },
+      "explanation": "Complete branch work (tests, review, merge/PR)"
+    },
+    {
+      "skill": "commit",
+      "priority": 9,
+      "triggers": {
+        "keywords": ["commit", "save changes"],
+        "phase": ["ship"],
+        "gitStatus": ["dirty"],
+        "uncommittedFiles": { "min": 1 }
+      },
+      "explanation": "Create git commit with proper message"
+    },
+    {
+      "skill": "create-pr",
+      "priority": 10,
+      "triggers": {
+        "keywords": ["create pr", "open pr", "pull request"],
+        "phase": ["ship"],
+        "gitStatus": ["clean"],
+        "branch": { "not": ["main", "master", "develop"] }
+      },
+      "explanation": "Create pull request following conventions"
+    },
+    {
+      "skill": "requesting-code-review",
+      "priority": 11,
+      "triggers": {
+        "keywords": ["request review", "need review", "ready for review"],
+        "phase": ["review", "ship"],
+        "uncommittedFiles": { "max": 0 }
+      },
+      "explanation": "Prepare code for review before commits"
+    },
+    {
+      "skill": "using-git-worktrees",
+      "priority": 12,
+      "triggers": {
+        "keywords": ["worktree", "parallel work", "multiple branches"],
+        "phase": ["build"],
+        "gitStatus": ["clean"]
+      },
+      "explanation": "Use git worktrees for isolated feature work"
+    },
+    {
+      "skill": "test-debug-assistant",
+      "priority": 13,
+      "triggers": {
+        "keywords": ["test failing", "test error", "test failure"],
+        "phase": ["test"],
+        "filePatterns": ["**/*.test.*", "**/*.spec.*"]
+      },
+      "explanation": "Intelligent test failure analyzer with root cause detection"
+    },
+    {
+      "skill": "api-design-expert",
+      "priority": 14,
+      "triggers": {
+        "keywords": ["api design", "endpoint", "rest", "graphql"],
+        "phase": ["plan", "build"]
+      },
+      "explanation": "API design expert for RESTful and GraphQL APIs"
+    },
+    {
+      "skill": "frontend-design",
+      "priority": 15,
+      "triggers": {
+        "keywords": ["frontend", "ui", "interface", "component"],
+        "phase": ["build"],
+        "filePatterns": ["**/*.tsx", "**/*.jsx", "**/*.vue"]
+      },
+      "explanation": "Create distinctive, production-grade frontend interfaces"
+    },
+    {
+      "skill": "database-schema-specialist",
+      "priority": 16,
+      "triggers": {
+        "keywords": ["database", "schema", "migration", "sql"],
+        "phase": ["plan", "build"]
+      },
+      "explanation": "Database schema design specialist"
+    },
+    {
+      "skill": "fullstack-architecture-designer",
+      "priority": 17,
+      "triggers": {
+        "keywords": ["architecture", "system design", "full stack"],
+        "phase": ["plan"]
+      },
+      "explanation": "Full-stack application architecture designer"
+    },
+    {
+      "skill": "documentation-audit",
+      "priority": 18,
+      "triggers": {
+        "keywords": ["documentation", "docs", "readme"],
+        "phase": ["review"],
+        "filePatterns": ["**/*.md", "docs/**"]
+      },
+      "explanation": "Documentation audit and consistency verification"
+    },
+    {
+      "skill": "iterate-pr",
+      "priority": 19,
+      "triggers": {
+        "keywords": ["fix ci", "ci failing", "tests failing in ci"],
+        "phase": ["test", "ship"]
+      },
+      "explanation": "Iterate on PR until CI passes"
+    },
+    {
+      "skill": "code-review",
+      "priority": 20,
+      "triggers": {
+        "keywords": ["code review", "review pr"],
+        "phase": ["review"],
+        "uncommittedFiles": { "min": 1 }
+      },
+      "explanation": "Perform code reviews following best practices"
+    }
+  ]
+}

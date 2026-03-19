@@ -1,0 +1,38 @@
+{
+  "name": "gstack-industrial",
+  "version": "1.0.0",
+  "description": "Industrial-grade implementation of gstack for Claude Code",
+  "type": "module",
+  "scripts": {
+    "install": "bun run install.ts",
+    "test": "bun test",
+    "generate": "bun run skill-router/gen-skill-docs.ts",
+    "check": "bun run skill-router/gen-skill-docs.ts --check",
+    "watch": "bun run skill-router/gen-skill-docs.ts --watch",
+    "test-router": "bun run skill-router/test-cli.ts"
+  },
+  "keywords": [
+    "claude-code",
+    "gstack",
+    "ai",
+    "automation",
+    "skill-router",
+    "template-system"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/gstack-industrial.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/gstack-industrial/issues"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/gstack-industrial#readme",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  }
+}
