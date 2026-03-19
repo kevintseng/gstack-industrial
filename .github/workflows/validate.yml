@@ -1,0 +1,81 @@
+name: Validate Templates
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-templates:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Check template sync
+        run: |
+          cd skill-router
+          bun run gen-skill-docs.ts --check
+
+      - name: Validate matchers.json
+        run: |
+          if ! jq empty skill-router/matchers.json 2>/dev/null; then
+            echo "❌ Invalid JSON in matchers.json"
+            exit 1
+          fi
+          echo "✅ matchers.json is valid JSON"
+
+      - name: TypeScript compilation check
+        run: |
+          cd skill-router
+          bun build index.ts --target=node --outdir=./dist
+          echo "✅ TypeScript compiles successfully"
+
+      - name: Test CLI tool
+        run: |
+          cd skill-router
+          bun run test-cli.ts "test message" > /dev/null
+          echo "✅ CLI tool runs successfully"
+
+  lint-commits:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit messages
+        run: |
+          # Fetch commits from origin/main to HEAD
+          # This is safe - no dynamic input from github.event is used
+          git log --format=%s origin/main..HEAD > commits.txt
+
+          echo "Checking commit messages:"
+          cat commits.txt
+
+          # Check conventional commits format
+          while IFS= read -r commit; do
+            if [ -z "$commit" ]; then
+              continue
+            fi
+            if ! echo "$commit" | grep -Eq '^(feat|fix|docs|style|refactor|perf|test|chore)(\(.+\))?: .+'; then
+              echo "❌ Invalid commit message: $commit"
+              echo "Expected format: type(scope): subject"
+              exit 1
+            fi
+          done < commits.txt
+
+          echo "✅ All commit messages follow convention"
