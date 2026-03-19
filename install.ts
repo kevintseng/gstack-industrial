@@ -5,7 +5,7 @@
  * Installs template system and skill router to Claude Code
  */
 
-import { copyFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
+import { copyFileSync, mkdirSync, existsSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -30,22 +30,6 @@ function copyFile(src: string, dest: string) {
   }
 }
 
-function copyDirectory(src: string, dest: string) {
-  if (!existsSync(dest)) {
-    mkdirSync(dest, { recursive: true });
-  }
-
-  const items = readFileSync(src, 'utf-8').split('\n');
-  items.forEach(item => {
-    if (item) {
-      const srcPath = join(src, item);
-      const destPath = join(dest, item);
-      if (existsSync(srcPath)) {
-        copyFile(srcPath, destPath);
-      }
-    }
-  });
-}
 
 async function main() {
   console.log('\n🚀 Installing gstack-industrial...\n');
@@ -164,7 +148,7 @@ async function main() {
   console.log('   cd ~/.claude/skills/templates');
   console.log('   bun run skill-router/gen-skill-docs.ts');
   console.log('');
-  console.log('📚 Documentation: https://github.com/YOUR_USERNAME/gstack-industrial');
+  console.log('📚 Documentation: https://github.com/kevintseng/gstack-industrial');
   console.log('');
 }
 
