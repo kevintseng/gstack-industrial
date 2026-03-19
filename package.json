@@ -23,12 +23,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/gstack-industrial.git"
+    "url": "https://github.com/kevintseng/gstack-industrial.git"
   },
   "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/gstack-industrial/issues"
+    "url": "https://github.com/kevintseng/gstack-industrial/issues"
   },
-  "homepage": "https://github.com/YOUR_USERNAME/gstack-industrial#readme",
+  "homepage": "https://github.com/kevintseng/gstack-industrial#readme",
   "engines": {
     "bun": ">=1.0.0"
   },

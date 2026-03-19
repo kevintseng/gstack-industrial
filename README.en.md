@@ -40,7 +40,7 @@ You have 168 Claude Code skills, but can never remember which one to use?
 
 ```bash
 # 1. Download
-git clone https://github.com/YOUR_USERNAME/gstack-industrial.git
+git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
 # 2. Auto-install

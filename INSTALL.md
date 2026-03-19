@@ -4,7 +4,7 @@
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/gstack-industrial.git
+git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
 # 2. Run installer
