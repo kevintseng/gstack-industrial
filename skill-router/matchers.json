@@ -4,8 +4,16 @@
       "skill": "brainstorming",
       "priority": 1,
       "triggers": {
-        "keywords": ["brainstorm", "idea", "worth building", "should i", "is it feasible"],
-        "phase": ["think"]
+        "keywords": [
+          "brainstorm",
+          "idea",
+          "worth building",
+          "should i",
+          "is it feasible"
+        ],
+        "phase": [
+          "think"
+        ]
       },
       "explanation": "Brainstorm ideas with structured thinking"
     },
@@ -13,9 +21,19 @@
       "skill": "writing-plans",
       "priority": 2,
       "triggers": {
-        "keywords": ["plan", "implement", "approach", "architecture", "break down"],
-        "phase": ["plan"],
-        "gitStatus": ["clean"]
+        "keywords": [
+          "plan",
+          "implement",
+          "approach",
+          "architecture",
+          "break down"
+        ],
+        "phase": [
+          "plan"
+        ],
+        "gitStatus": [
+          "clean"
+        ]
       },
       "explanation": "Create step-by-step implementation plan"
     },
@@ -23,9 +41,18 @@
       "skill": "executing-plans",
       "priority": 3,
       "triggers": {
-        "keywords": ["execute", "start implementation", "begin coding"],
-        "phase": ["build"],
-        "filePatterns": ["docs/plans/*.md", "plan.md"]
+        "keywords": [
+          "execute",
+          "start implementation",
+          "begin coding"
+        ],
+        "phase": [
+          "build"
+        ],
+        "filePatterns": [
+          "docs/plans/*.md",
+          "plan.md"
+        ]
       },
       "explanation": "Execute implementation plan step-by-step"
     },
@@ -33,10 +60,21 @@
       "skill": "sa:comprehensive-code-review",
       "priority": 4,
       "triggers": {
-        "keywords": ["review", "check code", "audit", "verify implementation"],
-        "phase": ["review"],
-        "gitStatus": ["dirty"],
-        "uncommittedFiles": { "min": 3 }
+        "keywords": [
+          "review",
+          "check code",
+          "audit",
+          "verify implementation"
+        ],
+        "phase": [
+          "review"
+        ],
+        "gitStatus": [
+          "dirty"
+        ],
+        "uncommittedFiles": {
+          "min": 3
+        }
       },
       "explanation": "Run comprehensive code review with Reality Check"
     },
@@ -44,9 +82,21 @@
       "skill": "systematic-debugging",
       "priority": 5,
       "triggers": {
-        "keywords": ["debug", "error", "failing", "bug", "broken", "fix"],
-        "phase": ["test"],
-        "filePatterns": ["**/*.test.*", "**/*.spec.*"]
+        "keywords": [
+          "debug",
+          "error",
+          "failing",
+          "bug",
+          "broken",
+          "fix"
+        ],
+        "phase": [
+          "test"
+        ],
+        "filePatterns": [
+          "**/*.test.*",
+          "**/*.spec.*"
+        ]
       },
       "explanation": "Systematic root cause analysis for bugs"
     },
@@ -54,8 +104,15 @@
       "skill": "find-bugs",
       "priority": 6,
       "triggers": {
-        "keywords": ["find bugs", "security", "vulnerabilities", "code quality"],
-        "phase": ["review"]
+        "keywords": [
+          "find bugs",
+          "security",
+          "vulnerabilities",
+          "code quality"
+        ],
+        "phase": [
+          "review"
+        ]
       },
       "explanation": "Find bugs, security vulnerabilities, and code quality issues"
     },
@@ -63,9 +120,20 @@
       "skill": "verification-before-completion",
       "priority": 7,
       "triggers": {
-        "keywords": ["done", "finished", "complete", "ready"],
-        "phase": ["review", "ship"],
-        "gitStatus": ["dirty", "clean"]
+        "keywords": [
+          "done",
+          "finished",
+          "complete",
+          "ready"
+        ],
+        "phase": [
+          "review",
+          "ship"
+        ],
+        "gitStatus": [
+          "dirty",
+          "clean"
+        ]
       },
       "explanation": "Anti-hallucination verification gate before claiming done"
     },
@@ -73,10 +141,27 @@
       "skill": "finishing-a-development-branch",
       "priority": 8,
       "triggers": {
-        "keywords": ["merge", "ship", "create pr", "ready to merge", "pull request"],
-        "phase": ["ship"],
-        "gitStatus": ["clean", "dirty"],
-        "branch": { "not": ["main", "master", "develop"] }
+        "keywords": [
+          "merge",
+          "ship",
+          "create pr",
+          "ready to merge",
+          "pull request"
+        ],
+        "phase": [
+          "ship"
+        ],
+        "gitStatus": [
+          "clean",
+          "dirty"
+        ],
+        "branch": {
+          "not": [
+            "main",
+            "master",
+            "develop"
+          ]
+        }
       },
       "explanation": "Complete branch work (tests, review, merge/PR)"
     },
@@ -84,10 +169,19 @@
       "skill": "commit",
       "priority": 9,
       "triggers": {
-        "keywords": ["commit", "save changes"],
-        "phase": ["ship"],
-        "gitStatus": ["dirty"],
-        "uncommittedFiles": { "min": 1 }
+        "keywords": [
+          "commit",
+          "save changes"
+        ],
+        "phase": [
+          "ship"
+        ],
+        "gitStatus": [
+          "dirty"
+        ],
+        "uncommittedFiles": {
+          "min": 1
+        }
       },
       "explanation": "Create git commit with proper message"
     },
@@ -95,10 +189,24 @@
       "skill": "create-pr",
       "priority": 10,
       "triggers": {
-        "keywords": ["create pr", "open pr", "pull request"],
-        "phase": ["ship"],
-        "gitStatus": ["clean"],
-        "branch": { "not": ["main", "master", "develop"] }
+        "keywords": [
+          "create pr",
+          "open pr",
+          "pull request"
+        ],
+        "phase": [
+          "ship"
+        ],
+        "gitStatus": [
+          "clean"
+        ],
+        "branch": {
+          "not": [
+            "main",
+            "master",
+            "develop"
+          ]
+        }
       },
       "explanation": "Create pull request following conventions"
     },
@@ -106,9 +214,18 @@
       "skill": "requesting-code-review",
       "priority": 11,
       "triggers": {
-        "keywords": ["request review", "need review", "ready for review"],
-        "phase": ["review", "ship"],
-        "uncommittedFiles": { "max": 0 }
+        "keywords": [
+          "request review",
+          "need review",
+          "ready for review"
+        ],
+        "phase": [
+          "review",
+          "ship"
+        ],
+        "uncommittedFiles": {
+          "max": 0
+        }
       },
       "explanation": "Prepare code for review before commits"
     },
@@ -116,9 +233,17 @@
       "skill": "using-git-worktrees",
       "priority": 12,
       "triggers": {
-        "keywords": ["worktree", "parallel work", "multiple branches"],
-        "phase": ["build"],
-        "gitStatus": ["clean"]
+        "keywords": [
+          "worktree",
+          "parallel work",
+          "multiple branches"
+        ],
+        "phase": [
+          "build"
+        ],
+        "gitStatus": [
+          "clean"
+        ]
       },
       "explanation": "Use git worktrees for isolated feature work"
     },
@@ -126,9 +251,18 @@
       "skill": "test-debug-assistant",
       "priority": 13,
       "triggers": {
-        "keywords": ["test failing", "test error", "test failure"],
-        "phase": ["test"],
-        "filePatterns": ["**/*.test.*", "**/*.spec.*"]
+        "keywords": [
+          "test failing",
+          "test error",
+          "test failure"
+        ],
+        "phase": [
+          "test"
+        ],
+        "filePatterns": [
+          "**/*.test.*",
+          "**/*.spec.*"
+        ]
       },
       "explanation": "Intelligent test failure analyzer with root cause detection"
     },
@@ -136,8 +270,16 @@
       "skill": "api-design-expert",
       "priority": 14,
       "triggers": {
-        "keywords": ["api design", "endpoint", "rest", "graphql"],
-        "phase": ["plan", "build"]
+        "keywords": [
+          "api design",
+          "endpoint",
+          "rest",
+          "graphql"
+        ],
+        "phase": [
+          "plan",
+          "build"
+        ]
       },
       "explanation": "API design expert for RESTful and GraphQL APIs"
     },
@@ -145,9 +287,20 @@
       "skill": "frontend-design",
       "priority": 15,
       "triggers": {
-        "keywords": ["frontend", "ui", "interface", "component"],
-        "phase": ["build"],
-        "filePatterns": ["**/*.tsx", "**/*.jsx", "**/*.vue"]
+        "keywords": [
+          "frontend",
+          "ui",
+          "interface",
+          "component"
+        ],
+        "phase": [
+          "build"
+        ],
+        "filePatterns": [
+          "**/*.tsx",
+          "**/*.jsx",
+          "**/*.vue"
+        ]
       },
       "explanation": "Create distinctive, production-grade frontend interfaces"
     },
@@ -155,8 +308,16 @@
       "skill": "database-schema-specialist",
       "priority": 16,
       "triggers": {
-        "keywords": ["database", "schema", "migration", "sql"],
-        "phase": ["plan", "build"]
+        "keywords": [
+          "database",
+          "schema",
+          "migration",
+          "sql"
+        ],
+        "phase": [
+          "plan",
+          "build"
+        ]
       },
       "explanation": "Database schema design specialist"
     },
@@ -164,8 +325,14 @@
       "skill": "fullstack-architecture-designer",
       "priority": 17,
       "triggers": {
-        "keywords": ["architecture", "system design", "full stack"],
-        "phase": ["plan"]
+        "keywords": [
+          "architecture",
+          "system design",
+          "full stack"
+        ],
+        "phase": [
+          "plan"
+        ]
       },
       "explanation": "Full-stack application architecture designer"
     },
@@ -173,9 +340,18 @@
       "skill": "documentation-audit",
       "priority": 18,
       "triggers": {
-        "keywords": ["documentation", "docs", "readme"],
-        "phase": ["review"],
-        "filePatterns": ["**/*.md", "docs/**"]
+        "keywords": [
+          "documentation",
+          "docs",
+          "readme"
+        ],
+        "phase": [
+          "review"
+        ],
+        "filePatterns": [
+          "**/*.md",
+          "docs/**"
+        ]
       },
       "explanation": "Documentation audit and consistency verification"
     },
@@ -183,8 +359,15 @@
       "skill": "iterate-pr",
       "priority": 19,
       "triggers": {
-        "keywords": ["fix ci", "ci failing", "tests failing in ci"],
-        "phase": ["test", "ship"]
+        "keywords": [
+          "fix ci",
+          "ci failing",
+          "tests failing in ci"
+        ],
+        "phase": [
+          "test",
+          "ship"
+        ]
       },
       "explanation": "Iterate on PR until CI passes"
     },
@@ -192,11 +375,3533 @@
       "skill": "code-review",
       "priority": 20,
       "triggers": {
-        "keywords": ["code review", "review pr"],
-        "phase": ["review"],
-        "uncommittedFiles": { "min": 1 }
+        "keywords": [
+          "code review",
+          "review pr"
+        ],
+        "phase": [
+          "review"
+        ],
+        "uncommittedFiles": {
+          "min": 1
+        }
       },
       "explanation": "Perform code reviews following best practices"
+    },
+    {
+      "skill": "content-research-writer",
+      "priority": 21,
+      "triggers": {
+        "keywords": [
+          "collaborative partnership",
+          "content research writer",
+          "writing high-quality",
+          "high-quality content",
+          "effort collaborative",
+          "conducting research",
+          "citations improving",
+          "providing real-time"
+        ],
+        "phase": [
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Assists in writing high-quality content by conducting research, adding citations",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "benchmark",
+      "priority": 22,
+      "triggers": {
+        "keywords": [
+          "performance",
+          "bundle size",
+          "page speed",
+          "lighthouse",
+          "web vitals",
+          "benchmark",
+          "load time",
+          "performance regression"
+        ],
+        "phase": [
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Performance regression detection using the browse daemon",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "skill-judge",
+      "priority": 23,
+      "triggers": {
+        "keywords": [
+          "provides multi-dimensional",
+          "multi-dimensional scoring",
+          "official specifications",
+          "improvement suggestions",
+          "actionable improvement",
+          "specifications best",
+          "practices reviewing",
+          "reviewing auditing"
+        ],
+        "phase": [
+          "plan",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Evaluate Agent Skill design quality against official specifications and best pra",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "dwarf-expert",
+      "priority": 24,
+      "triggers": {
+        "keywords": [
+          "information interacting",
+          "answering dwarf-related",
+          "dwarf-related questions",
+          "triggers understanding",
+          "expertise analyzing",
+          "debug understanding",
+          "understanding dwarf",
+          "provides expertise"
+        ],
+        "phase": [
+          "build",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Provides expertise for analyzing DWARF debug files and understanding the DWARF d",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "ask-questions-if-underspecified",
+      "priority": 25,
+      "triggers": {
+        "keywords": [
+          "ask questions if underspecified",
+          "requirements implementing",
+          "clarify requirements",
+          "implementing serious",
+          "serious doubts",
+          "doubts araise",
+          "requirements",
+          "implementing"
+        ],
+        "phase": [
+          "plan",
+          "build"
+        ]
+      },
+      "explanation": "Clarify requirements before implementing",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "hugging-face-tool-builder",
+      "priority": 26,
+      "triggers": {
+        "keywords": [
+          "hugging face tool builder",
+          "chaining combining",
+          "repeated automated",
+          "especially useful",
+          "automated creates",
+          "creates reusable",
+          "scripts achieve",
+          "help especially"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "ship"
+        ]
+      },
+      "explanation": "Use this skill when the user wants to build tool/scripts or achieve a task where",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "dependency-upgrade-advisor",
+      "priority": 27,
+      "triggers": {
+        "keywords": [
+          "dependency upgrade advisor",
+          "dependency upgrades",
+          "detection migration",
+          "migration guidance",
+          "upgrades breaking",
+          "change detection",
+          "safe dependency",
+          "breaking change"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Expert advisor for safe dependency upgrades with breaking change detection and m",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "playwright-skill",
+      "priority": 28,
+      "triggers": {
+        "keywords": [
+          "playwright auto-detects",
+          "automation playwright",
+          "interactions validate",
+          "functionality perform",
+          "perform browser-based",
+          "browser-based testing",
+          "browser interactions",
+          "browser automation"
+        ],
+        "phase": [
+          "plan",
+          "review",
+          "test"
+        ]
+      },
+      "explanation": "Complete browser automation with Playwright",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "ui-ux-pro-max",
+      "priority": 29,
+      "triggers": {
+        "keywords": [
+          "glassmorphism claymorphism",
+          "responsive skeuomorphism",
+          "claymorphism minimalism",
+          "accessibility animation",
+          "brutalism neumorphism",
+          "palette accessibility",
+          "styles glassmorphism",
+          "minimalism brutalism"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "UI/UX design intelligence",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "plan-design-review",
+      "priority": 30,
+      "triggers": {
+        "keywords": [
+          "review the design plan",
+          "design critique",
+          "reviewed implementation",
+          "audits design-review",
+          "design-review review",
+          "critique proactively",
+          "proactively suggest",
+          "components reviewed"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Designer's eye plan review — interactive, like CEO and Eng review",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "tailored-resume-generator",
+      "priority": 31,
+      "triggers": {
+        "keywords": [
+          "tailored resume generator",
+          "descriptions generates",
+          "achievements maximize",
+          "relevant experience",
+          "skills achievements",
+          "generates tailored",
+          "highlight relevant",
+          "maximize interview"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Analyzes job descriptions and generates tailored resumes that highlight relevant",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "comprehensive-code-review",
+      "priority": 32,
+      "triggers": {
+        "keywords": [
+          "review the code",
+          "run code review",
+          "code review",
+          "anti-hallucination enforcement",
+          "checks anti-hallucination",
+          "comprehensive code review",
+          "mandatory tool-verified",
+          "enforcement performing"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Complete code review framework with mandatory tool-verified checks and anti-hall",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "architecture-decision-records",
+      "priority": 33,
+      "triggers": {
+        "keywords": [
+          "singleton vs multiple instances",
+          "how should we handle auth",
+          "architecture decision",
+          "should we use x or y",
+          "why did we choose",
+          "document decision",
+          "rest vs graphql",
+          "which framework"
+        ],
+        "phase": [
+          "plan",
+          "build"
+        ]
+      },
+      "explanation": "Use when (1) choosing between technologies - \"should we use X or Y\", (2) making ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "incident-postmortem",
+      "priority": 34,
+      "triggers": {
+        "keywords": [
+          "root cause analysis",
+          "incident review",
+          "what went wrong",
+          "production bug",
+          "post-mortem",
+          "postmortem",
+          "5 whys",
+          "outage"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Use AFTER (1) production outages - any duration, (2) data loss/corruption, (3) s",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "langsmith-fetch",
+      "priority": 35,
+      "triggers": {
+        "keywords": [
+          "performance automatically",
+          "requires langsmith-fetch",
+          "behavior investigating",
+          "automatically fetches",
+          "investigating errors",
+          "operations examining",
+          "langchain langgraph",
+          "langsmith-fetch cli"
+        ],
+        "phase": [
+          "review",
+          "test"
+        ]
+      },
+      "explanation": "Debug LangChain and LangGraph agents by fetching execution traces from LangSmith",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "interpreting-culture-index",
+      "priority": 36,
+      "triggers": {
+        "keywords": [
+          "interpreting culture index",
+          "individual interpretation",
+          "assessments personality",
+          "behavioral assessments",
+          "interpreting culture",
+          "interview transcript",
+          "prediction candidate",
+          "profiles behavioral"
+        ],
+        "phase": [
+          "plan",
+          "ship"
+        ]
+      },
+      "explanation": "Use when interpreting Culture Index surveys, CI profiles, behavioral assessments",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "git-workflow-guide",
+      "priority": 37,
+      "triggers": {
+        "keywords": [
+          "branching strategies",
+          "operations creating",
+          "workflow questions",
+          "questions keywords",
+          "git workflow guide",
+          "strategies branch",
+          "creating branches",
+          "merge operations"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Guide Git branching strategies, branch naming, and merge operations",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "ai-collaboration-standards",
+      "priority": 38,
+      "triggers": {
+        "keywords": [
+          "ai collaboration standards",
+          "recommendations providing",
+          "evidence-based responses",
+          "making recommendations",
+          "prevent hallucination",
+          "ensure evidence-based",
+          "suggestions analyzing",
+          "hallucination ensure"
+        ],
+        "phase": [
+          "build",
+          "ship"
+        ]
+      },
+      "explanation": "Prevent AI hallucination and ensure evidence-based responses when analyzing code",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "code-review-assistant",
+      "priority": 39,
+      "triggers": {
+        "keywords": [
+          "code review assistant",
+          "checklist pre-commit",
+          "pre-commit quality",
+          "quality committing",
+          "requests checking",
+          "request checklist",
+          "checklist quality",
+          "review checklist"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Systematic code review checklist and pre-commit quality gates for PRs",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "commit-standards",
+      "priority": 40,
+      "triggers": {
+        "keywords": [
+          "following conventional",
+          "conventional commits",
+          "message conventional",
+          "messages following",
+          "conventional feat",
+          "commits standard",
+          "standard writing",
+          "commit reviewing"
+        ],
+        "phase": [
+          "review"
+        ]
+      },
+      "explanation": "Format commit messages following conventional commits standard",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "requirement-assistant",
+      "priority": 41,
+      "triggers": {
+        "keywords": [
+          "feature specification",
+          "specification writing",
+          "requirement assistant",
+          "writing requirements",
+          "keywords requirement",
+          "requirement writing",
+          "guide requirement",
+          "requirements user"
+        ],
+        "phase": [
+          "plan"
+        ]
+      },
+      "explanation": "Guide requirement writing, user story creation, and feature specification",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "documentation-guide",
+      "priority": 42,
+      "triggers": {
+        "keywords": [
+          "documentation contributing",
+          "documentation structure",
+          "contributing changelog",
+          "project documentation",
+          "readme documentation",
+          "guide documentation",
+          "documentation guide",
+          "documentation best"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Guide documentation structure, README content, and project documentation best pr",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "release-standards",
+      "priority": 43,
+      "triggers": {
+        "keywords": [
+          "versioning changelog",
+          "changelog formatting",
+          "semantic versioning",
+          "formatting software",
+          "changelogs keywords",
+          "releases preparing",
+          "preparing releases",
+          "writing changelogs"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Semantic versioning and changelog formatting for software releases",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "testing-guide",
+      "priority": 44,
+      "triggers": {
+        "keywords": [
+          "writing standards",
+          "tests discussing",
+          "unit integration",
+          "testing pyramid",
+          "discussing test",
+          "naming keywords",
+          "integration e2e",
+          "standards e2e"
+        ],
+        "phase": [
+          "plan",
+          "test"
+        ]
+      },
+      "explanation": "Testing pyramid and test writing standards for UT/IT/ST/E2E",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "autoplan",
+      "priority": 45,
+      "triggers": {
+        "keywords": [
+          "review this plan automatically",
+          "make the decisions for me",
+          "run all reviews",
+          "auto review",
+          "autoplan",
+          "sequentially auto-decisions",
+          "auto-decisions decision",
+          "automatically decisions"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Auto-review pipeline — reads the full CEO, design, and eng review skills from di",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "holistic-development-check",
+      "priority": 46,
+      "triggers": {
+        "keywords": [
+          "architectural inconsistency",
+          "holistic development check",
+          "comprehensive development",
+          "failures architectural",
+          "development checklist",
+          "inconsistency complex",
+          "checklist preventing",
+          "starting significant"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Comprehensive development checklist preventing myopic solutions, silent failures",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "design-consultation",
+      "priority": 47,
+      "triggers": {
+        "keywords": [
+          "brand guidelines",
+          "create design.md",
+          "design system",
+          "consultation understands",
+          "sites plan-design-review",
+          "plan-design-review infer",
+          "researches landscape",
+          "aesthetic typography"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Design consultation: understands your product, researches the landscape, propose",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "audit-context-building",
+      "priority": 48,
+      "triggers": {
+        "keywords": [
+          "ultra-granular line-by-line",
+          "enables ultra-granular",
+          "audit context building",
+          "architectural context",
+          "context vulnerability",
+          "deep architectural",
+          "line-by-line code",
+          "vulnerability bug"
+        ],
+        "phase": [
+          "build",
+          "test"
+        ]
+      },
+      "explanation": "Enables ultra-granular, line-by-line code analysis to build deep architectural c",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "test-driven-development",
+      "priority": 49,
+      "triggers": {
+        "keywords": [
+          "test driven development",
+          "writing implementation",
+          "implementing feature",
+          "implementation code",
+          "feature bugfix",
+          "bugfix writing",
+          "implementation",
+          "implementing"
+        ],
+        "phase": [
+          "build",
+          "test"
+        ]
+      },
+      "explanation": "Use when implementing any feature or bugfix, before writing implementation code",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "finding-duplicate-functions",
+      "priority": 50,
+      "triggers": {
+        "keywords": [
+          "finding duplicate functions",
+          "implementations especially",
+          "llm-generated codebases",
+          "duplication functions",
+          "names implementations",
+          "semantic duplication",
+          "useful llm-generated",
+          "functions different"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review"
+        ]
+      },
+      "explanation": "Use when auditing a codebase for semantic duplication - functions that do the sa",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "development-flow",
+      "priority": 51,
+      "triggers": {
+        "keywords": [
+          "complete development",
+          "development workflow",
+          "deployment including",
+          "analysis deployment",
+          "including security",
+          "quality standards",
+          "security quality",
+          "development flow"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Complete development workflow from impact analysis to deployment, including secu",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "json-render-usage",
+      "priority": 52,
+      "triggers": {
+        "keywords": [
+          "streaming schema-validated",
+          "schema-validated component",
+          "ai-powered dashboards",
+          "component generation",
+          "building ai-powered",
+          "constraints prevent",
+          "language streaming",
+          "safety constraints"
+        ],
+        "phase": [
+          "build",
+          "ship"
+        ]
+      },
+      "explanation": "Use when building AI-powered dashboards or forms where users prompt in natural l",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "freeze",
+      "priority": 53,
+      "triggers": {
+        "keywords": [
+          "only edit this folder",
+          "lock down edits",
+          "restrict edits",
+          "fixing",
+          "freeze",
+          "prevent accidentally",
+          "accidentally fixing",
+          "specific directory"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Restrict file edits to a specific directory for the session",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "hugging-face-evaluation",
+      "priority": 54,
+      "triggers": {
+        "keywords": [
+          "hugging face evaluation",
+          "model-index metadata",
+          "supports extracting",
+          "artificial analysis",
+          "evaluation results",
+          "manage evaluation",
+          "content importing",
+          "scores artificial"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Add and manage evaluation results in Hugging Face model cards",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "api-route-designer",
+      "priority": 55,
+      "triggers": {
+        "keywords": [
+          "designer specializing",
+          "endpoints middleware",
+          "handling validation",
+          "api route designer",
+          "specializing app",
+          "middleware error",
+          "route designer",
+          "error handling"
+        ],
+        "phase": [
+          "plan"
+        ]
+      },
+      "explanation": "Next.js API route designer specializing in App Router API endpoints, middleware,",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "video-downloader",
+      "priority": 56,
+      "triggers": {
+        "keywords": [
+          "youtube platforms",
+          "platforms offline",
+          "downloads videos",
+          "editing archival",
+          "archival handles",
+          "video downloader",
+          "offline viewing",
+          "viewing editing"
+        ],
+        "phase": [
+          "review"
+        ]
+      },
+      "explanation": "Downloads videos from YouTube and other platforms for offline viewing, editing, ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "theme-factory",
+      "priority": 57,
+      "triggers": {
+        "keywords": [
+          "styling artifacts",
+          "artifact creating",
+          "creating generate",
+          "artifacts slides",
+          "theme on-the-fly",
+          "toolkit styling",
+          "artifacts theme",
+          "theme artifacts"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Toolkit for styling artifacts with a theme",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "git-workflow-assistant",
+      "priority": 58,
+      "triggers": {
+        "keywords": [
+          "git workflow assistant",
+          "branching strategies",
+          "messages management",
+          "strategies commit",
+          "guide branching",
+          "commit messages",
+          "workflow guide",
+          "git workflow"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Expert Git workflow guide for branching strategies, commit messages, and PR mana",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "expo-deployment",
+      "priority": 59,
+      "triggers": {
+        "keywords": [
+          "expo deployment",
+          "deploying expo",
+          "store android",
+          "android play",
+          "web hosting",
+          "hosting api",
+          "play store",
+          "api routes"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Deploying Expo apps to iOS App Store, Android Play Store, web hosting, and API r",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "expo-cicd-workflows",
+      "priority": 60,
+      "triggers": {
+        "keywords": [
+          "deployment automation",
+          "pipelines deployment",
+          "expo cicd workflows",
+          "helps understand",
+          "understand write",
+          "context mentions",
+          "workflows wants",
+          "build pipelines"
+        ],
+        "phase": [
+          "build",
+          "ship"
+        ]
+      },
+      "explanation": "Helps understand and write EAS workflow YAML files for Expo projects",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "environment-setup-wizard",
+      "priority": 61,
+      "triggers": {
+        "keywords": [
+          "environment setup wizard",
+          "cross-platform support",
+          "automated environment",
+          "wizard cross-platform",
+          "configuration wizard",
+          "setup configuration",
+          "environment setup",
+          "cross-platform"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Automated environment setup and configuration wizard with cross-platform support",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "careful",
+      "priority": 62,
+      "triggers": {
+        "keywords": [
+          "careful mode",
+          "safety mode",
+          "be careful",
+          "prod mode",
+          "guardrails destructive",
+          "destructive operations",
+          "destructive commands",
+          "similar destructive"
+        ],
+        "phase": [
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Safety guardrails for destructive commands",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "gitignore-template",
+      "priority": 63,
+      "triggers": {
+        "keywords": [
+          "monorepo privacy-focused",
+          "privacy-focused internal",
+          "comprehensive gitignore",
+          "generate comprehensive",
+          "repositories gitignore",
+          "setting repositories",
+          "document protection",
+          "gitignore projects"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Generate comprehensive .gitignore files for new projects",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "entry-point-analyzer",
+      "priority": 64,
+      "triggers": {
+        "keywords": [
+          "role-restricted contract-only",
+          "identify state-changing",
+          "contract-only generates",
+          "admin role-restricted",
+          "privileged operations",
+          "state-changing entry",
+          "generates structured",
+          "entry point analyzer"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Analyzes smart contract codebases to identify state-changing entry points for se",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "cso",
+      "priority": 65,
+      "triggers": {
+        "keywords": [
+          "security audit",
+          "pentest review",
+          "threat model",
+          "cso review",
+          "owasp",
+          "infrastructure-first security",
+          "mode infrastructure-first",
+          "archaeology dependency"
+        ],
+        "phase": [
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Chief Security Officer mode",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "raffle-winner-picker",
+      "priority": 66,
+      "triggers": {
+        "keywords": [
+          "selection transparency",
+          "raffle winner picker",
+          "spreadsheets google",
+          "lists spreadsheets",
+          "unbiased selection",
+          "giveaways raffles",
+          "sheets giveaways",
+          "raffles contests"
+        ],
+        "phase": [
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Picks random winners from lists, spreadsheets, or Google Sheets for giveaways, r",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "canary",
+      "priority": 67,
+      "triggers": {
+        "keywords": [
+          "post-deploy check",
+          "watch production",
+          "monitor deploy",
+          "verify deploy",
+          "canary",
+          "performance regressions",
+          "periodic screenshots",
+          "screenshots compares"
+        ],
+        "phase": [
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Post-deploy canary monitoring",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "security-auth-expert",
+      "priority": 68,
+      "triggers": {
+        "keywords": [
+          "security authentication",
+          "authentication expert",
+          "security auth expert",
+          "expert specializing",
+          "management security",
+          "specializing oauth",
+          "session management",
+          "web applications"
+        ],
+        "phase": [
+          "plan",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Security and authentication expert specializing in OAuth, JWT, session managemen",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "doc-coauthoring",
+      "priority": 69,
+      "triggers": {
+        "keywords": [
+          "co-authoring documentation",
+          "documentation proposals",
+          "workflow co-authoring",
+          "similar documentation",
+          "efficiently transfer",
+          "structured workflow",
+          "write documentation",
+          "proposals technical"
+        ],
+        "phase": [
+          "plan",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Guide users through a structured workflow for co-authoring documentation",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "media-writer",
+      "priority": 70,
+      "triggers": {
+        "keywords": [
+          "platform-native content",
+          "create platform-native",
+          "resonates community",
+          "linkedin transforms",
+          "adapting technical",
+          "transforms generic",
+          "content resonates",
+          "community culture"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Create platform-native content that resonates with each community's culture",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "voice-intelligence",
+      "priority": 71,
+      "triggers": {
+        "keywords": [
+          "text-to-speech reading",
+          "meeting transcription",
+          "conversations convert",
+          "capabilities meeting",
+          "voice text-to-speech",
+          "transcription voice",
+          "voice conversations",
+          "professional voice"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Professional voice AI capabilities for meeting transcription, voice Q&A, and tex",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "web-asset-generator",
+      "priority": 72,
+      "triggers": {
+        "keywords": [
+          "text-to-image generation",
+          "resizing text-to-image",
+          "generation provides",
+          "web asset generator",
+          "including favicons",
+          "whatsapp linkedin",
+          "assets including",
+          "facebook twitter"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Generate web assets including favicons, app icons (PWA), and social media meta i",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "skill-share",
+      "priority": 73,
+      "triggers": {
+        "keywords": [
+          "collaboration discovery",
+          "skills automatically",
+          "automatically shares",
+          "team collaboration",
+          "creates claude",
+          "claude skills",
+          "rube seamless",
+          "seamless team"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "A skill that creates new Claude skills and automatically shares them on Slack us",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "repository-standards",
+      "priority": 74,
+      "triggers": {
+        "keywords": [
+          "guidelines organization",
+          "repository standards",
+          "repository language",
+          "public repositories",
+          "language standards",
+          "content guidelines",
+          "organization rules",
+          "standards content"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Repository language standards, content guidelines, and file organization rules f",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "developer-growth-analysis",
+      "priority": 75,
+      "triggers": {
+        "keywords": [
+          "developer growth analysis",
+          "hackernews automatically",
+          "patterns development",
+          "resources hackernews",
+          "improvement curates",
+          "automatically sends",
+          "personalized growth",
+          "learning resources"
+        ],
+        "phase": [
+          "build",
+          "ship"
+        ]
+      },
+      "explanation": "Analyzes your recent Claude Code chat history to identify coding patterns, devel",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "constant-time-analysis",
+      "priority": 76,
+      "triggers": {
+        "keywords": [
+          "vulnerabilities cryptographic",
+          "side-channel vulnerabilities",
+          "secret-dependent branches",
+          "constant-time programming",
+          "secrets secret-dependent",
+          "implementing reviewing",
+          "branches constant-time",
+          "constant time analysis"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Detects timing side-channel vulnerabilities in cryptographic code",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "web-design-guidelines",
+      "priority": 77,
+      "triggers": {
+        "keywords": [
+          "check my site against best practices",
+          "check accessibility",
+          "review my ui",
+          "audit design",
+          "review ux",
+          "guidelines compliance",
+          "web design guidelines",
+          "interface guidelines"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Review UI code for Web Interface Guidelines compliance",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "investigate",
+      "priority": 78,
+      "triggers": {
+        "keywords": [
+          "investigate this error",
+          "root cause analysis",
+          "why is this broken",
+          "fix this bug",
+          "debug this",
+          "behavior troubleshooting",
+          "hypothesize implement",
+          "systematic debugging"
+        ],
+        "phase": [
+          "build",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Systematic debugging with root cause investigation",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "domain-name-brainstormer",
+      "priority": 79,
+      "triggers": {
+        "keywords": [
+          "domain name brainstormer",
+          "brainstorming manual",
+          "checks availability",
+          "availability across",
+          "hours brainstorming",
+          "generates creative",
+          "creative domain",
+          "across multiple"
+        ],
+        "phase": [
+          "think",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Generates creative domain name ideas for your project and checks availability ac",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "property-based-testing",
+      "priority": 80,
+      "triggers": {
+        "keywords": [
+          "serialization validation",
+          "guidance property-based",
+          "features property-based",
+          "property-based testing",
+          "coverage example-based",
+          "property based testing",
+          "example-based tests",
+          "multiple languages"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Provides guidance for property-based testing across multiple languages and smart",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "differential-review",
+      "priority": 81,
+      "triggers": {
+        "keywords": [
+          "security-focused differential",
+          "performs security-focused",
+          "generates comprehensive",
+          "comprehensive markdown",
+          "reports automatically",
+          "automatically detects",
+          "security regressions",
+          "differential review"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Performs security-focused differential review of code changes (PRs, commits, dif",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "using-superpowers",
+      "priority": 82,
+      "triggers": {
+        "keywords": [
+          "conversation establishes",
+          "starting conversation",
+          "requiring invocation",
+          "including clarifying",
+          "clarifying questions",
+          "invocation response",
+          "establishes skills",
+          "response including"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Use when starting any conversation - establishes how to find and use skills, req",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "dispatching-parallel-agents",
+      "priority": 83,
+      "triggers": {
+        "keywords": [
+          "dispatching parallel agents",
+          "sequential dependencies",
+          "facing independent",
+          "independent tasks",
+          "state sequential",
+          "worked without",
+          "without shared",
+          "tasks worked"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Use when facing 2+ independent tasks that can be worked on without shared state ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "background-plan-executor",
+      "priority": 84,
+      "triggers": {
+        "keywords": [
+          "background plan executor",
+          "execute implementation",
+          "background sub-agents",
+          "implementation plans",
+          "time sequentially",
+          "plans background",
+          "sub-agents task",
+          "implementation"
+        ],
+        "phase": [
+          "plan",
+          "build"
+        ]
+      },
+      "explanation": "Execute implementation plans using background sub-agents, one task at a time seq",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "document-release",
+      "priority": 85,
+      "triggers": {
+        "keywords": [
+          "sync documentation",
+          "update the docs",
+          "post-ship docs",
+          "architecture contributing",
+          "post-ship documentation",
+          "documentation post-ship",
+          "docs cross-references",
+          "cross-references diff"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "ship"
+        ]
+      },
+      "explanation": "Post-ship documentation update",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "image-enhancer",
+      "priority": 86,
+      "triggers": {
+        "keywords": [
+          "presentations documentation",
+          "especially screenshots",
+          "screenshots enhancing",
+          "enhancing resolution",
+          "resolution sharpness",
+          "images presentations",
+          "documentation social",
+          "images especially"
+        ],
+        "phase": [
+          "plan",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Improves the quality of images, especially screenshots, by enhancing resolution,",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "gstack-upgrade",
+      "priority": 87,
+      "triggers": {
+        "keywords": [
+          "get latest version",
+          "upgrade gstack",
+          "update gstack",
+          "vendored install",
+          "version detects",
+          "global vendored",
+          "latest version",
+          "detects global"
+        ],
+        "phase": [
+          "test"
+        ]
+      },
+      "explanation": "Upgrade gstack to the latest version",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "prompt-optimization",
+      "priority": 88,
+      "triggers": {
+        "keywords": [
+          "accuracy non-reasoning",
+          "prompt optimization",
+          "repetition improve",
+          "non-reasoning llms",
+          "prompt repetition",
+          "improve accuracy",
+          "applies prompt",
+          "non-reasoning"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Applies prompt repetition to improve accuracy for non-reasoning LLMs",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "land-and-deploy",
+      "priority": 89,
+      "triggers": {
+        "keywords": [
+          "ship it to production",
+          "merge and verify",
+          "land it",
+          "deploy",
+          "merge",
+          "land",
+          "verifies production",
+          "production health"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Land and deploy workflow",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "codex",
+      "priority": 90,
+      "triggers": {
+        "keywords": [
+          "200 iq autistic developer",
+          "codex challenge",
+          "second opinion",
+          "consult codex",
+          "codex review",
+          "ask codex",
+          "challenge adversarial",
+          "continuity follow-ups"
+        ],
+        "phase": [
+          "build",
+          "review"
+        ]
+      },
+      "explanation": "OpenAI Codex CLI wrapper — three modes",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "i18n-implementation-guide",
+      "priority": 91,
+      "triggers": {
+        "keywords": [
+          "internationalization i18n",
+          "i18n implementation guide",
+          "applications next-intl",
+          "implementation guide",
+          "internationalization",
+          "i18n implementation",
+          "switching localized",
+          "next-intl language"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Internationalization (i18n) implementation guide for Next.js applications with n",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "agent-builder",
+      "priority": 92,
+      "triggers": {
+        "keywords": [
+          "design an ai system",
+          "build an assistant",
+          "create an agent",
+          "multi-step orchestration",
+          "capabilities subagents",
+          "architecture agentic",
+          "creative operational",
+          "assistant autonomous"
+        ],
+        "phase": [
+          "plan",
+          "build"
+        ]
+      },
+      "explanation": "Design and build AI agents for any domain",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "qa",
+      "priority": 93,
+      "triggers": {
+        "keywords": [
+          "fix what's broken",
+          "does this work?",
+          "test this site",
+          "test and fix",
+          "find bugs",
+          "qa",
+          "atomically re-verifying",
+          "evidence ship-readiness"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Systematically QA test a web application and fix bugs found",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "qa-only",
+      "priority": 94,
+      "triggers": {
+        "keywords": [
+          "test but don't fix",
+          "just report bugs",
+          "qa report only",
+          "testing systematically",
+          "systematically tests",
+          "application produces",
+          "full test-fix-verify",
+          "test-fix-verify loop"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Report-only QA testing",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "setup-browser-cookies",
+      "priority": 95,
+      "triggers": {
+        "keywords": [
+          "authenticate the browser",
+          "login to the site",
+          "import cookies",
+          "testing authenticated",
+          "setup browser cookies",
+          "authenticate browser",
+          "authenticated pages",
+          "interactive picker"
+        ],
+        "phase": [
+          "test"
+        ]
+      },
+      "explanation": "Import cookies from your real Chromium browser into the headless browse session",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "review",
+      "priority": 96,
+      "triggers": {
+        "keywords": [
+          "pre-landing review",
+          "review this pr",
+          "check my diff",
+          "code review",
+          "violations conditional",
+          "boundary violations",
+          "proactively suggest",
+          "effects structural"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Pre-landing PR review",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "plan-ceo-review",
+      "priority": 97,
+      "triggers": {
+        "keywords": [
+          "is this ambitious enough",
+          "strategy review",
+          "think bigger",
+          "expand scope",
+          "rethink this",
+          "cherry-pick expansions",
+          "selective expansion",
+          "proactively suggest"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "CEO/founder-mode plan review",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "office-hours",
+      "priority": 98,
+      "triggers": {
+        "keywords": [
+          "help me think through this",
+          "is this worth building",
+          "brainstorm this",
+          "i have an idea",
+          "office hours",
+          "plan-ceo-review plan-eng-review",
+          "written plan-ceo-review",
+          "observation future-fit"
+        ],
+        "phase": [
+          "think",
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "YC Office Hours — two modes",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "retro",
+      "priority": 99,
+      "triggers": {
+        "keywords": [
+          "engineering retrospective",
+          "what did we ship",
+          "weekly retro",
+          "retrospective proactively",
+          "per-person contributions",
+          "retrospective analyzes",
+          "contributions praise",
+          "tracking team-aware"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Weekly engineering retrospective",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "browse",
+      "priority": 100,
+      "triggers": {
+        "keywords": [
+          "take a screenshot",
+          "open in browser",
+          "test the site",
+          "dogfood this",
+          "annotated screenshots",
+          "dogfooding navigate",
+          "responsive layouts",
+          "deployment dogfood"
+        ],
+        "phase": [
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Fast headless browser for QA testing and site dogfooding",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "design-review",
+      "priority": 101,
+      "triggers": {
+        "keywords": [
+          "check if it looks good",
+          "audit the design",
+          "design polish",
+          "visual qa",
+          "implementation plan-design-review",
+          "re-verifying screenshots",
+          "plan-design-review audit",
+          "atomically re-verifying"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Designer's eye QA: finds visual inconsistency, spacing issues, hierarchy problem",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "ship",
+      "priority": 102,
+      "triggers": {
+        "keywords": [
+          "merge and push",
+          "push to main",
+          "create a pr",
+          "deploy",
+          "ship",
+          "proactively suggest",
+          "update changelog",
+          "changelog commit"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Ship workflow: detect + merge base branch, run tests, review diff, bump VERSION,",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "plan-eng-review",
+      "priority": 103,
+      "triggers": {
+        "keywords": [
+          "review the architecture",
+          "engineering review",
+          "lock in the plan",
+          "opinionated recommendations",
+          "interactively opinionated",
+          "architecture engineering",
+          "recommendations review",
+          "issues implementation"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Eng manager-mode plan review",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "guard",
+      "priority": 104,
+      "triggers": {
+        "keywords": [
+          "maximum safety",
+          "lock it down",
+          "full safety",
+          "guard mode",
+          "warnings directory-scoped",
+          "directory-scoped edits",
+          "destructive command",
+          "specified directory"
+        ],
+        "phase": [
+          "plan",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Full safety mode: destructive command warnings + directory-scoped edits",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "unfreeze",
+      "priority": 105,
+      "triggers": {
+        "keywords": [
+          "allow all edits",
+          "remove freeze",
+          "unlock edits",
+          "unfreeze",
+          "edits directories",
+          "directories again",
+          "session unfreeze",
+          "freeze boundary"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Clear the freeze boundary set by /freeze, allowing edits to all directories agai",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "setup-deploy",
+      "priority": 106,
+      "triggers": {
+        "keywords": [
+          "how do i deploy with gstack",
+          "set up land-and-deploy",
+          "configure deployment",
+          "add deploy config",
+          "setup deploy",
+          "deployment land-and-deploy",
+          "settings land-and-deploy",
+          "land-and-deploy detects"
+        ],
+        "phase": [
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Configure deployment settings for /land-and-deploy",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "xlsx",
+      "priority": 107,
+      "triggers": {
+        "keywords": [
+          "visualization spreadsheets",
+          "spreadsheets recalculating",
+          "comprehensive spreadsheet",
+          "analysis visualization",
+          "recalculating formulas",
+          "creating spreadsheets",
+          "spreadsheets formulas",
+          "existing spreadsheets"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Comprehensive spreadsheet creation, editing, and analysis with support for formu",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "pdf",
+      "priority": 108,
+      "triggers": {
+        "keywords": [
+          "programmatically process",
+          "form programmatically",
+          "manipulation toolkit",
+          "splitting documents",
+          "toolkit extracting",
+          "documents handling",
+          "comprehensive pdf",
+          "merging splitting"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Comprehensive PDF manipulation toolkit for extracting text and tables, creating ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "expo-dev-client",
+      "priority": 109,
+      "triggers": {
+        "keywords": [
+          "development clients",
+          "build distribute",
+          "expo development",
+          "distribute expo",
+          "clients locally",
+          "expo dev client",
+          "via testflight",
+          "locally via"
+        ],
+        "phase": [
+          "build",
+          "test"
+        ]
+      },
+      "explanation": "Build and distribute Expo development clients locally or via TestFlight",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "native-data-fetching",
+      "priority": 110,
+      "triggers": {
+        "keywords": [
+          "implementing debugging",
+          "native data fetching",
+          "caching strategies",
+          "strategies offline",
+          "debugging network",
+          "handling caching",
+          "network request",
+          "fetching covers"
+        ],
+        "phase": [
+          "build",
+          "test"
+        ]
+      },
+      "explanation": "Use when implementing or debugging ANY network request, API call, or data fetchi",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "expo-api-routes",
+      "priority": 111,
+      "triggers": {
+        "keywords": [
+          "guidelines creating",
+          "expo api routes",
+          "creating api",
+          "routes expo",
+          "expo router",
+          "eas hosting",
+          "api routes",
+          "router eas"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Guidelines for creating API routes in Expo Router with EAS Hosting",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "use-dom",
+      "priority": 112,
+      "triggers": {
+        "keywords": [
+          "native incrementally",
+          "dom components",
+          "components web",
+          "webview native",
+          "incrementally",
+          "code webview",
+          "native as-is",
+          "web migrate"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Use Expo DOM components to run web code in a webview on native and as-is on web",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "building-native-ui",
+      "priority": 113,
+      "triggers": {
+        "keywords": [
+          "components navigation",
+          "navigation animations",
+          "fundamentals styling",
+          "covers fundamentals",
+          "animations patterns",
+          "building beautiful",
+          "styling components",
+          "building native ui"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Complete guide for building beautiful apps with Expo Router",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "expo-tailwind-setup",
+      "priority": 114,
+      "triggers": {
+        "keywords": [
+          "react-native-css nativewind",
+          "expo react-native-css",
+          "nativewind universal",
+          "expo tailwind setup",
+          "universal styling",
+          "react-native-css",
+          "tailwind css",
+          "nativewind"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Set up Tailwind CSS v4 in Expo with react-native-css and NativeWind v5 for unive",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "mcp-cli",
+      "priority": 115,
+      "triggers": {
+        "keywords": [
+          "discover resources",
+          "context pre-loaded",
+          "servers on-demand",
+          "resources prompts",
+          "without polluting",
+          "polluting context",
+          "mcp integrations",
+          "prompts without"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Use MCP servers on-demand via the mcp CLI tool - discover tools, resources, and ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "frontend-framework-expert",
+      "priority": 116,
+      "triggers": {
+        "keywords": [
+          "frontend framework expert",
+          "performance optimization",
+          "management performance",
+          "expert specializing",
+          "frontend framework",
+          "specializing react",
+          "patterns including",
+          "frontend patterns"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "test"
+        ]
+      },
+      "explanation": "Frontend framework expert specializing in React, Next.js, and modern frontend pa",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "algorithmic-art",
+      "priority": 117,
+      "triggers": {
+        "keywords": [
+          "randomness interactive",
+          "interactive parameter",
+          "parameter exploration",
+          "creating algorithmic",
+          "original algorithmic",
+          "copyright violations",
+          "seeded randomness",
+          "exploration users"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Creating algorithmic art using p5.js with seeded randomness and interactive para",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "d3-viz",
+      "priority": 118,
+      "triggers": {
+        "keywords": [
+          "geographic visualisations",
+          "transitions interactions",
+          "visualisations creating",
+          "visualisations complex",
+          "visualisation requires",
+          "bespoke visualisations",
+          "javascript environment",
+          "requires fine-grained"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Creating interactive data visualisations using d3.js",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "connect-apps",
+      "priority": 119,
+      "triggers": {
+        "keywords": [
+          "external services",
+          "messages actions",
+          "actions external",
+          "claude external",
+          "connect claude",
+          "external apps",
+          "emails create",
+          "create issues"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Connect Claude to external apps like Gmail, Slack, GitHub",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "work-quality-verification",
+      "priority": 120,
+      "triggers": {
+        "keywords": [
+          "work quality verification",
+          "standards verification",
+          "completion checklists",
+          "verification tiers",
+          "quality standards",
+          "tiers completion",
+          "complete work",
+          "work quality"
+        ],
+        "phase": [
+          "review"
+        ]
+      },
+      "explanation": "Complete work quality standards, verification tiers, and completion checklists",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "code-quality-guardian",
+      "priority": 121,
+      "triggers": {
+        "keywords": [
+          "code quality guardian",
+          "quality enforcement",
+          "scanning technical",
+          "enforcement style",
+          "checking security",
+          "security scanning",
+          "automated code",
+          "style checking"
+        ],
+        "phase": [
+          "build",
+          "review"
+        ]
+      },
+      "explanation": "Automated code quality enforcement with style checking, security scanning, and t",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "documentation-auto-maintainer",
+      "priority": 122,
+      "triggers": {
+        "keywords": [
+          "documentation auto maintainer",
+          "documentation maintenance",
+          "automated documentation",
+          "generation changelog",
+          "changelog management",
+          "maintenance api",
+          "docs generation",
+          "documentation"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Automated documentation maintenance with API docs generation and changelog manag",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "hugging-face-datasets",
+      "priority": 123,
+      "triggers": {
+        "keywords": [
+          "querying transformation",
+          "transformation designed",
+          "supports initializing",
+          "comprehensive dataset",
+          "hugging face datasets",
+          "server comprehensive",
+          "initializing repos",
+          "prompts streaming"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "ship"
+        ]
+      },
+      "explanation": "Create and manage datasets on Hugging Face Hub",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "typescript-migration-expert",
+      "priority": 124,
+      "triggers": {
+        "keywords": [
+          "typescript migration expert",
+          "converting javascript",
+          "typescript migration",
+          "javascript projects",
+          "projects typescript",
+          "typescript minimal",
+          "minimal disruption",
+          "disruption maximum"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "TypeScript migration expert for converting JavaScript projects to TypeScript wit",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "internal-comms",
+      "priority": 125,
+      "triggers": {
+        "keywords": [
+          "internal communications",
+          "communications formats",
+          "communications status",
+          "company newsletters",
+          "reports leadership",
+          "leadership updates",
+          "newsletters faqs",
+          "incident reports"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "A set of resources to help me write all kinds of internal communications, using ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "polymarket-dev",
+      "priority": 126,
+      "triggers": {
+        "keywords": [
+          "integration polymarket",
+          "pipelines integration",
+          "polymarket prediction",
+          "building polymarket",
+          "backtesting systems",
+          "prediction markets",
+          "bots backtesting",
+          "polymarket apis"
+        ],
+        "phase": [
+          "build",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Use when building on Polymarket APIs, trading bots, backtesting systems, market ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "ci-cd-pipeline-expert",
+      "priority": 127,
+      "triggers": {
+        "keywords": [
+          "pipeline configuration",
+          "deployment automation",
+          "ci cd pipeline expert",
+          "configuration expert",
+          "actions deployment",
+          "github actions",
+          "expert github",
+          "configuration"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "CI/CD pipeline configuration expert for GitHub Actions and deployment automation",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "skill-creator",
+      "priority": 128,
+      "triggers": {
+        "keywords": [
+          "capabilities specialized",
+          "workflows integrations",
+          "specialized knowledge",
+          "claude capabilities",
+          "knowledge workflows",
+          "creating effective",
+          "effective skills",
+          "existing extends"
+        ],
+        "phase": [
+          "plan",
+          "build"
+        ]
+      },
+      "explanation": "Guide for creating effective skills",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "checkpoint-mode",
+      "priority": 129,
+      "triggers": {
+        "keywords": [
+          "selective autonomy",
+          "autonomy pattern",
+          "tasks selective",
+          "checkpoint mode",
+          "pause review",
+          "review tasks",
+          "selective",
+          "autonomy"
+        ],
+        "phase": [
+          "review"
+        ]
+      },
+      "explanation": "Pause for review every N tasks - selective autonomy pattern",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "loki-mode",
+      "priority": 130,
+      "triggers": {
+        "keywords": [
+          "loki mode",
+          "requires --dangerously-skip-permissions",
+          "--dangerously-skip-permissions flag",
+          "--dangerously-skip-permissions",
+          "multi-agent autonomous",
+          "intervention requires",
+          "autonomous startup",
+          "human intervention"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Multi-agent autonomous startup system",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "dispatching-parallel-agents-with-choice",
+      "priority": 131,
+      "triggers": {
+        "keywords": [
+          "dispatching parallel agents with choice",
+          "multiple specialized",
+          "specialized agents",
+          "dispatch multiple",
+          "choice execution",
+          "agents parallel",
+          "execution mode",
+          "parallel user"
+        ],
+        "phase": [
+          "plan"
+        ]
+      },
+      "explanation": "Dispatch multiple specialized agents in parallel with user choice for execution ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "canvas-design",
+      "priority": 132,
+      "triggers": {
+        "keywords": [
+          "copyright violations",
+          "design philosophy",
+          "create beautiful",
+          "beautiful visual",
+          "documents design",
+          "copying existing",
+          "existing artists",
+          "philosophy user"
+        ],
+        "phase": [
+          "plan",
+          "build"
+        ]
+      },
+      "explanation": "Create beautiful visual art in .png and .pdf documents using design philosophy",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "ffuf-web-fuzzing",
+      "priority": 133,
+      "triggers": {
+        "keywords": [
+          "requests auto-calibration",
+          "including authenticated",
+          "auto-calibration result",
+          "authenticated fuzzing",
+          "fuzzing penetration",
+          "penetration testing",
+          "testing including",
+          "auto-calibration"
+        ],
+        "phase": [
+          "test"
+        ]
+      },
+      "explanation": "Expert guidance for ffuf web fuzzing during penetration testing, including authe",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "performance-profiler",
+      "priority": 134,
+      "triggers": {
+        "keywords": [
+          "profiling optimization",
+          "performance profiling",
+          "performance profiler",
+          "optimization guide",
+          "web applications",
+          "optimization",
+          "applications",
+          "performance"
+        ],
+        "phase": [
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Performance profiling and optimization guide for web applications",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "agents-md",
+      "priority": 135,
+      "triggers": {
+        "keywords": [
+          "maintain agent docs",
+          "create agents.md",
+          "update agents.md",
+          "set up claude.md",
+          "minimal documentation",
+          "instructions concise",
+          "documentation style",
+          "agent instructions"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "This skill should be used when the user asks to \"create AGENTS.md\", \"update AGEN",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "firebase-apk-scanner",
+      "priority": 136,
+      "triggers": {
+        "keywords": [
+          "misconfigurations including",
+          "security misconfigurations",
+          "vulnerabilities performing",
+          "firebase vulnerabilities",
+          "buckets authentication",
+          "authentication issues",
+          "firebase apk scanner",
+          "functions analyzing"
+        ],
+        "phase": [
+          "review",
+          "test"
+        ]
+      },
+      "explanation": "Scans Android APKs for Firebase security misconfigurations including open databa",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "pptx",
+      "priority": 137,
+      "triggers": {
+        "keywords": [
+          "presentations modifying",
+          "creating presentations",
+          "presentation creation",
+          "work presentations",
+          "presentations pptx",
+          "notes presentation",
+          "presentation tasks",
+          "modifying editing"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Presentation creation, editing, and analysis",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "hugging-face-cli",
+      "priority": 138,
+      "triggers": {
+        "keywords": [
+          "authentication transfers",
+          "infrastructure covers",
+          "covers authentication",
+          "transfers repository",
+          "repositories create",
+          "jobs infrastructure",
+          "repository creation",
+          "hub repositories"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Execute Hugging Face Hub operations using the `hf` CLI",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "hugging-face-trackio",
+      "priority": 139,
+      "triggers": {
+        "keywords": [
+          "dashboard visualization",
+          "training experiments",
+          "retrieving analyzing",
+          "hugging face trackio",
+          "experiments trackio",
+          "real-time dashboard",
+          "visualization space",
+          "visualize training"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Track and visualize ML training experiments with Trackio",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "invoice-organizer",
+      "priority": 140,
+      "triggers": {
+        "keywords": [
+          "automatically organizes",
+          "automated organization",
+          "renaming consistently",
+          "information renaming",
+          "consistently sorting",
+          "preparation reading",
+          "bookkeeping minutes",
+          "organizes invoices"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Automatically organizes invoices and receipts for tax preparation by reading mes",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "fix-review",
+      "priority": 141,
+      "triggers": {
+        "keywords": [
+          "compare fix commits to audit report",
+          "check if tob-xxx was addressed",
+          "post-audit remediation review",
+          "validate remediation commits",
+          "review the fix branch",
+          "post-audit remediation",
+          "validate remediation",
+          "without introducing"
+        ],
+        "phase": [
+          "review",
+          "test"
+        ]
+      },
+      "explanation": "Verifies that git commits address security audit findings without introducing bu",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "vercel-react-best-practices",
+      "priority": 142,
+      "triggers": {
+        "keywords": [
+          "vercel react best practices",
+          "performance optimization",
+          "optimization performance",
+          "performance improvements",
+          "optimization guidelines",
+          "reviewing refactoring",
+          "performance patterns",
+          "engineering writing"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "React and Next.js performance optimization guidelines from Vercel Engineering",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "background-skill-wrapper",
+      "priority": 143,
+      "triggers": {
+        "keywords": [
+          "background skill wrapper",
+          "background foreground",
+          "wrapper background",
+          "universal wrapper",
+          "foreground mode",
+          "background",
+          "foreground",
+          "universal"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Universal wrapper to run ANY skill in background or foreground mode",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "twitter-algorithm-optimizer",
+      "priority": 144,
+      "triggers": {
+        "keywords": [
+          "twitter algorithm optimizer",
+          "visibility recommendation",
+          "open-source algorithm",
+          "engagement visibility",
+          "recommendation system",
+          "twitter open-source",
+          "algorithm insights",
+          "improve engagement"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Analyze and optimize tweets for maximum reach using Twitter's open-source algori",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "changelog-generator",
+      "priority": 145,
+      "triggers": {
+        "keywords": [
+          "customer-friendly release",
+          "clear customer-friendly",
+          "user-facing changelogs",
+          "transforming technical",
+          "automatically creates",
+          "history categorizing",
+          "categorizing changes",
+          "changes transforming"
+        ],
+        "phase": [
+          "build",
+          "ship"
+        ]
+      },
+      "explanation": "Automatically creates user-facing changelogs from git commits by analyzing commi",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "ios-simulator-skill",
+      "priority": 146,
+      "triggers": {
+        "keywords": [
+          "production-ready scripts",
+          "automation accessibility",
+          "accessibility testing",
+          "lifecycle management",
+          "management optimized",
+          "building automation",
+          "automation provides",
+          "semantic navigation"
+        ],
+        "phase": [
+          "build",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "21 production-ready scripts for iOS app testing, building, and automation",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "using-tmux-for-interactive-commands",
+      "priority": 147,
+      "triggers": {
+        "keywords": [
+          "using tmux for interactive commands",
+          "controlling interactive",
+          "approach controlling",
+          "interactive sessions",
+          "provides tmux-based",
+          "tmux-based approach",
+          "sessions send-keys",
+          "require real-time"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Use when you need to run interactive CLI tools (vim, git rebase -i, Python REPL,",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "slack-gif-creator",
+      "priority": 148,
+      "triggers": {
+        "keywords": [
+          "constraints validation",
+          "provides constraints",
+          "validation animation",
+          "knowledge utilities",
+          "utilities creating",
+          "animation concepts",
+          "creating animated",
+          "slack gif creator"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Knowledge and utilities for creating animated GIFs optimized for Slack",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "hugging-face-jobs",
+      "priority": 149,
+      "triggers": {
+        "keywords": [
+          "estimation authentication",
+          "designed general-purpose",
+          "general-purpose compute",
+          "infrastructure without",
+          "infrastructure covers",
+          "authentication tokens",
+          "timeout configuration",
+          "inference experiments"
+        ],
+        "phase": [
+          "plan",
+          "ship"
+        ]
+      },
+      "explanation": "This skill should be used when users want to run any workload on Hugging Face Jo",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "competitive-ads-extractor",
+      "priority": 150,
+      "triggers": {
+        "keywords": [
+          "competitive ads extractor",
+          "analyzes competitors",
+          "understand messaging",
+          "creative approaches",
+          "libraries facebook",
+          "messaging problems",
+          "approaches working",
+          "extracts analyzes"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Extracts and analyzes competitors' ads from ad libraries (Facebook, LinkedIn, et",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "file-organizer",
+      "priority": 151,
+      "triggers": {
+        "keywords": [
+          "intelligently organizes",
+          "computer understanding",
+          "understanding context",
+          "duplicates suggesting",
+          "structures automating",
+          "finding duplicates",
+          "automating cleanup",
+          "organizes folders"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Intelligently organizes your files and folders across your computer by understan",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "hugging-face-paper-publisher",
+      "priority": 152,
+      "triggers": {
+        "keywords": [
+          "hugging face paper publisher",
+          "professional markdown-based",
+          "generating professional",
+          "markdown-based research",
+          "authorship generating",
+          "claiming authorship",
+          "supports creating",
+          "datasets claiming"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Publish and manage research papers on Hugging Face Hub",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "webapp-testing",
+      "priority": 153,
+      "triggers": {
+        "keywords": [
+          "applications playwright",
+          "functionality debugging",
+          "frontend functionality",
+          "toolkit interacting",
+          "interacting testing",
+          "playwright supports",
+          "browser screenshots",
+          "screenshots viewing"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "test"
+        ]
+      },
+      "explanation": "Toolkit for interacting with and testing local web applications using Playwright",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "spec-to-code-compliance",
+      "priority": 154,
+      "triggers": {
+        "keywords": [
+          "implementation performing",
+          "protocol implementations",
+          "documentation specifies",
+          "spec to code compliance",
+          "exactly documentation",
+          "performing compliance",
+          "specifies blockchain",
+          "specs implementation"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Verifies code implements exactly what documentation specifies for blockchain aud",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "technical-debt-tracker",
+      "priority": 155,
+      "triggers": {
+        "keywords": [
+          "what technical debt do we have",
+          "this should be refactored",
+          "we'll fix this later",
+          "technical debt",
+          "refactor later",
+          "needs cleanup",
+          "code smell",
+          "shortcut"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Use when (1) finding code smells during review - \"this should be refactored\", (2",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "receiving-code-review",
+      "priority": 156,
+      "triggers": {
+        "keywords": [
+          "verification performative",
+          "implementing suggestions",
+          "technically questionable",
+          "suggestions especially",
+          "performative agreement",
+          "feedback implementing",
+          "questionable requires",
+          "receiving code review"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review"
+        ]
+      },
+      "explanation": "Use when receiving code review feedback, before implementing suggestions, especi",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "pre-deployment-checklist",
+      "priority": 157,
+      "triggers": {
+        "keywords": [
+          "pre-deployment verification",
+          "mandatory pre-deployment",
+          "pre deployment checklist",
+          "verification checklist",
+          "deployments production",
+          "directory deployments",
+          "production failures",
+          "checklist prevent"
+        ],
+        "phase": [
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Mandatory pre-deployment verification checklist to prevent blind deployments, wr",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "testing-strategy-architect",
+      "priority": 158,
+      "triggers": {
+        "keywords": [
+          "testing strategy architect",
+          "designing comprehensive",
+          "architect designing",
+          "coverage confidence",
+          "strategy architect",
+          "comprehensive test",
+          "testing strategy",
+          "unit integration"
+        ],
+        "phase": [
+          "plan",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Testing strategy architect designing comprehensive test pyramids with unit, inte",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "writing-skills",
+      "priority": 159,
+      "triggers": {
+        "keywords": [
+          "editing existing",
+          "skills verifying",
+          "verifying skills",
+          "creating skills",
+          "existing skills",
+          "work deployment",
+          "skills editing",
+          "writing skills"
+        ],
+        "phase": [
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Use when creating new skills, editing existing skills, or verifying skills work ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "sharp-edges",
+      "priority": 160,
+      "triggers": {
+        "keywords": [
+          "dangerous configurations",
+          "footgun misuse-resistant",
+          "misuse-resistant secure",
+          "dangerous configuration",
+          "identifies error-prone",
+          "configurations footgun",
+          "designs configuration",
+          "configuration schemas"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Identifies error-prone APIs, dangerous configurations, and footgun designs that ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "hugging-face-model-trainer",
+      "priority": 161,
+      "triggers": {
+        "keywords": [
+          "hugging face model trainer",
+          "transformer reinforcement",
+          "reinforcement learning",
+          "preparation validation",
+          "infrastructure covers",
+          "authentication model",
+          "jobs infrastructure",
+          "deployment includes"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "This skill should be used when users want to train or fine-tune language models ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "integration-config-expert",
+      "priority": 162,
+      "triggers": {
+        "keywords": [
+          "configuring troubleshooting",
+          "troubleshooting third-party",
+          "integration config expert",
+          "service integrations",
+          "third-party service",
+          "expert configuring",
+          "troubleshooting",
+          "integrations"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Expert in configuring and troubleshooting third-party service integrations",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "connect",
+      "priority": 163,
+      "triggers": {
+        "keywords": [
+          "update databases",
+          "messages update",
+          "connect claude",
+          "databases real",
+          "actions across",
+          "emails create",
+          "create issues",
+          "post messages"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Connect Claude to any app",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "anti-hallucination-protocol",
+      "priority": 164,
+      "triggers": {
+        "keywords": [
+          "comprehensive anti-hallucination",
+          "scenario-specific guidelines",
+          "anti-hallucination protocol",
+          "anti hallucination protocol",
+          "laws scenario-specific",
+          "mandatory checkpoints",
+          "ensure evidence-based",
+          "guidelines mandatory"
+        ],
+        "phase": [
+          "plan",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Comprehensive anti-hallucination protocol with iron laws, scenario-specific guid",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "mcp-builder",
+      "priority": 165,
+      "triggers": {
+        "keywords": [
+          "services well-designed",
+          "well-designed building",
+          "creating high-quality",
+          "integrate external",
+          "interact external",
+          "external services",
+          "servers integrate",
+          "high-quality mcp"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Guide for creating high-quality MCP (Model Context Protocol) servers that enable",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "vercel-deploy",
+      "priority": 166,
+      "triggers": {
+        "keywords": [
+          "create a preview deployment",
+          "deploy and give me the link",
+          "deploy this to production",
+          "push this live",
+          "deploy my app",
+          "authentication required",
+          "applications websites",
+          "claimable deployment"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Deploy applications and websites to Vercel",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "upgrading-expo",
+      "priority": 167,
+      "triggers": {
+        "keywords": [
+          "guidelines upgrading",
+          "fixing dependency",
+          "dependency issues",
+          "versions fixing",
+          "upgrading expo",
+          "sdk versions",
+          "guidelines",
+          "dependency"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Guidelines for upgrading Expo SDK versions and fixing dependency issues",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "brand-guidelines",
+      "priority": 168,
+      "triggers": {
+        "keywords": [
+          "anthropic look-and-feel",
+          "look-and-feel brand",
+          "anthropic official",
+          "formatting company",
+          "applies anthropic",
+          "colors typography",
+          "guidelines visual",
+          "visual formatting"
+        ],
+        "phase": [
+          "plan"
+        ]
+      },
+      "explanation": "Applies Anthropic's official brand colors and typography to any sort of artifact",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "subagent-driven-development",
+      "priority": 169,
+      "triggers": {
+        "keywords": [
+          "subagent driven development",
+          "executing implementation",
+          "implementation plans",
+          "plans independent",
+          "independent tasks",
+          "current session",
+          "implementation",
+          "tasks current"
+        ],
+        "phase": [
+          "plan",
+          "build"
+        ]
+      },
+      "explanation": "Use when executing implementation plans with independent tasks in the current se",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "claude-settings-audit",
+      "priority": 170,
+      "triggers": {
+        "keywords": [
+          "determining read-only",
+          "claude settings audit",
+          "generate recommended",
+          "settings determining",
+          "repository generate",
+          "permissions setting",
+          "analyze repository",
+          "recommended claude"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Analyze a repository to generate recommended Claude Code settings.json permissio",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "docx",
+      "priority": 171,
+      "triggers": {
+        "keywords": [
+          "formatting preservation",
+          "comprehensive document",
+          "professional documents",
+          "comments formatting",
+          "documents modifying",
+          "creating documents",
+          "document creation",
+          "preservation text"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Comprehensive document creation, editing, and analysis with support for tracked ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "meeting-insights-analyzer",
+      "priority": 172,
+      "triggers": {
+        "keywords": [
+          "meeting insights analyzer",
+          "communication leadership",
+          "transcripts recordings",
+          "patterns communication",
+          "communication insights",
+          "dominate conversations",
+          "perfect professionals",
+          "professionals seeking"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Analyzes meeting transcripts and recordings to uncover behavioral patterns, comm",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "nestjs-best-practices",
+      "priority": 173,
+      "triggers": {
+        "keywords": [
+          "deployment verification",
+          "generation deployment",
+          "nestjs best practices",
+          "nestjs-specific best",
+          "practices including",
+          "metadata generation",
+          "production failures",
+          "ordering metadata"
+        ],
+        "phase": [
+          "plan",
+          "ship"
+        ]
+      },
+      "explanation": "NestJS-specific best practices including DTO class ordering, metadata generation",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "vibe-coding",
+      "priority": 174,
+      "triggers": {
+        "keywords": [
+          "decision-making craftsmanship",
+          "transparent decision-making",
+          "collaborator professional",
+          "craftsmanship development",
+          "disciplined development",
+          "generator collaborator",
+          "professional standards",
+          "standards transparent"
+        ],
+        "phase": [
+          "plan",
+          "build",
+          "test",
+          "ship"
+        ]
+      },
+      "explanation": "Transform an AI agent into a tasteful, disciplined development partner",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "memesh-cloud-api",
+      "priority": 175,
+      "triggers": {
+        "keywords": [
+          "memesh-cloud-sync memesh-agent-register",
+          "memesh-agent-register memesh",
+          "working memesh-cloud-sync",
+          "memesh-agent-register",
+          "endpoints validation",
+          "reference endpoints",
+          "validation limits",
+          "cloud integration"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "MeMesh Cloud API reference — endpoints, validation limits, and usage patterns",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "web-artifacts-builder",
+      "priority": 176,
+      "triggers": {
+        "keywords": [
+          "elaborate multi-component",
+          "multi-component claude",
+          "web artifacts builder",
+          "artifacts requiring",
+          "creating elaborate",
+          "technologies react",
+          "management routing",
+          "simple single-file"
+        ],
+        "phase": [
+          "build"
+        ]
+      },
+      "explanation": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts ",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "burpsuite-project-parser",
+      "priority": 177,
+      "triggers": {
+        "keywords": [
+          "burpsuite project parser",
+          "patterns extracting",
+          "extracting security",
+          "searching response",
+          "searches explores",
+          "response headers",
+          "findings dumping",
+          "traffic captured"
+        ],
+        "phase": [
+          "think",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Searches and explores Burp Suite project files (.burp) from the command line",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "production-deployment-nextjs-cloudflare",
+      "priority": 178,
+      "triggers": {
+        "keywords": [
+          "production deployment nextjs cloudflare",
+          "webhooks troubleshooting",
+          "setting authentication",
+          "production deployment",
+          "troubleshooting oauth",
+          "authentication flows",
+          "configuring webhooks",
+          "redirects production"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Complete production deployment guide for Next.js apps on Cloudflare Pages with S",
+      "autoDiscovered": true
+    },
+    {
+      "skill": "lead-research-assistant",
+      "priority": 179,
+      "triggers": {
+        "keywords": [
+          "identifies high-quality",
+          "marketing professionals",
+          "lead research assistant",
+          "development marketing",
+          "providing actionable",
+          "business development",
+          "companies providing",
+          "high-quality leads"
+        ],
+        "phase": [
+          "build",
+          "review",
+          "ship"
+        ]
+      },
+      "explanation": "Identifies high-quality leads for your product or service by analyzing your busi",
+      "autoDiscovered": true
     }
   ]
 }

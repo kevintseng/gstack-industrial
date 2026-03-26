@@ -54,6 +54,7 @@ async function main() {
     'suggestion-formatter.ts',
     'index.ts',
     'gen-skill-docs.ts',
+    'auto-discover.ts',
     'test-cli.ts',
     'matchers.json',
     'README.md'
@@ -85,20 +86,28 @@ async function main() {
   });
   console.log('');
 
-  // 4. Copy hook
-  console.log('🎣 Installing Hook...');
-  const hookSrc = join(process.cwd(), 'hooks', 'skill-router-before-message.ts');
-  const hookDest = join(HOOKS_DIR, 'skill-router-before-message.ts');
-  if (existsSync(hookSrc)) {
-    copyFile(hookSrc, hookDest);
-    // Make executable
-    try {
-      await Bun.spawn(['chmod', '+x', hookDest]).exited;
-      console.log(`✅ Made executable: ${hookDest}`);
-    } catch (error) {
-      console.error('❌ Failed to make hook executable:', error);
+  // 4. Copy hooks
+  console.log('🎣 Installing Hooks...');
+  const hookFiles = [
+    'skill-router-before-message.ts',
+    'skill-discovery-session-start.sh',
+  ];
+
+  for (const hookFile of hookFiles) {
+    const src = join(process.cwd(), 'hooks', hookFile);
+    const dest = join(HOOKS_DIR, hookFile);
+    if (existsSync(src)) {
+      copyFile(src, dest);
+      try {
+        await Bun.spawn(['chmod', '+x', dest]).exited;
+        console.log(`✅ Made executable: ${dest}`);
+      } catch (error) {
+        console.error('❌ Failed to make hook executable:', error);
+      }
     }
   }
+  const hookDest = join(HOOKS_DIR, 'skill-router-before-message.ts');
+  const sessionHookDest = join(HOOKS_DIR, 'skill-discovery-session-start.sh');
   console.log('');
 
   // 5. Create default config if not exists
@@ -133,6 +142,7 @@ async function main() {
     if (existsSync(settingsPath)) {
       settings = JSON.parse(readFileSync(settingsPath, 'utf-8'));
     }
+    let changed = false;
     if (!settings.hooks) settings.hooks = {};
     if (!settings.hooks.UserPromptSubmit) settings.hooks.UserPromptSubmit = [];
 
@@ -146,18 +156,61 @@ async function main() {
         matcher: '*',
         hooks: [{ type: 'command', command: hookCommand }],
       });
-      writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      changed = true;
       console.log(`✅ Registered UserPromptSubmit hook`);
     } else {
-      console.log(`ℹ️  Hook already registered in settings.json`);
+      console.log(`ℹ️  UserPromptSubmit hook already registered`);
+    }
+
+    // Register SessionStart hook for auto-discovery
+    if (!settings.hooks.SessionStart) settings.hooks.SessionStart = [];
+
+    const sessionHookCommand = `bash ${sessionHookDest}`;
+    const hasSessionHook = settings.hooks.SessionStart.some((entry: any) =>
+      entry.hooks?.some((h: any) => h.command?.includes('skill-discovery-session-start'))
+    );
+
+    if (!hasSessionHook) {
+      settings.hooks.SessionStart.push({
+        matcher: 'startup',
+        hooks: [{ type: 'command', command: sessionHookCommand }],
+      });
+      changed = true;
+      console.log(`✅ Registered SessionStart hook (auto-discovery)`);
+    } else {
+      console.log(`ℹ️  SessionStart hook already registered`);
+    }
+
+    if (changed) {
+      writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      console.log(`✅ settings.json updated`);
     }
   } catch (error) {
     console.error('❌ Failed to register hook:', error);
-    console.log('   Manual step: add to ~/.claude/settings.json under hooks.UserPromptSubmit');
+    console.log('   Manual step: add to ~/.claude/settings.json under hooks');
   }
   console.log('');
 
-  // 7. Success message
+  // 7. Run auto-discovery to populate matchers.json
+  console.log('🔍 Running skill auto-discovery...');
+  try {
+    const autoDiscoverPath = join(routerDest, 'auto-discover.ts');
+    if (existsSync(autoDiscoverPath)) {
+      const proc = Bun.spawn(['bun', 'run', autoDiscoverPath], {
+        cwd: routerDest,
+        stdout: 'pipe',
+        stderr: 'pipe',
+      });
+      await proc.exited;
+      const stdout = await new Response(proc.stdout).text();
+      if (stdout.trim()) console.log(stdout.trim());
+    }
+  } catch (error) {
+    console.error('⚠️  Auto-discovery failed (non-critical):', error);
+  }
+  console.log('');
+
+  // 8. Success message
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('✅ Installation complete!');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
