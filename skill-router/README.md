@@ -488,12 +488,5 @@ Track in `~/.claude/analytics/skill-router.jsonl`:
 
 ## Related
 
-- **Design Doc**: `~/Documents/Obsidian-Vault/Projects/Claude-Code-Enhancement/Phase2-Design/phase2-skill-router-design.md`
 - **Template System**: `~/.claude/skills/templates/README.md`
 - **Universal Preamble**: `~/.claude/skills/templates/universal-preamble.sh`
-- **gstack Integration**: Phase 2 of Claude Code enhancement
-
----
-
-**Status**: ✅ Core engine complete (Week 3 Day 1-4)
-**Next**: Matcher refinement based on user feedback (Week 4)

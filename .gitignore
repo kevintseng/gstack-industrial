@@ -39,6 +39,9 @@ Thumbs.db
 # Session state (for testing)
 .claude/sessions/skill-router-state.json
 
+# Codex
+.codex/
+
 # Temporary files
 *.tmp
 *.bak
