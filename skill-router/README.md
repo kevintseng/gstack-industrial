@@ -58,15 +58,19 @@ Located in `~/.claude/skills/templates/skill-router/`:
 | `matcher-engine.ts` | Scoring algorithm, threshold filtering, ranking |
 | `suggestion-formatter.ts` | Formats suggestions for display |
 | `index.ts` | Main router entry point |
-| `matchers.json` | Skill matcher registry (20 skills configured) |
+| `matchers.json` | Skill matcher registry (manual + auto-discovered) |
+| `auto-discover.ts` | Scans SKILL.md files and updates matchers.json |
 | `test-cli.ts` | CLI test tool for debugging |
 
 ### Hook Integration
 
-- **File**: `~/.claude/hooks/skill-router-before-message.ts`
-- **Trigger**: Before every user message
-- **Action**: Route message → suggest skill if match found
-- **State**: Tracks suggestions, cooldown, user preferences
+- **UserPromptSubmit**: `~/.claude/hooks/skill-router-before-message.ts`
+  - Trigger: Before every user message
+  - Action: Route message -> suggest skill if match found
+  - State: Tracks suggestions, cooldown, user preferences
+- **SessionStart**: `~/.claude/hooks/skill-discovery-session-start.sh`
+  - Trigger: On session start (with 1-hour cooldown)
+  - Action: Auto-discover new skills and update matchers.json
 
 ---
 
@@ -76,12 +80,33 @@ Located in `~/.claude/skills/templates/skill-router/`:
 
 The hook is already created at `~/.claude/hooks/skill-router-before-message.ts`.
 
-To integrate with Claude Code's hookify system, add to `~/.claude/settings.json`:
+Add to `~/.claude/settings.json`:
 
 ```json
 {
   "hooks": {
-    "beforeMessage": "~/.claude/hooks/skill-router-before-message.ts"
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun run ~/.claude/hooks/skill-router-before-message.ts"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/skill-discovery-session-start.sh"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -236,7 +261,7 @@ Sort by:
 
 ## Matchers Registry
 
-20 skills configured in `matchers.json`:
+20 manual skills configured in `matchers.json` (plus auto-discovered skills):
 
 | Priority | Skill | Phase | Triggers |
 |----------|-------|-------|----------|

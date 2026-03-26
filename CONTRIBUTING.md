@@ -56,7 +56,7 @@
 
 ```bash
 # 1. Fork & Clone
-git clone https://github.com/YOUR_USERNAME/gstack-industrial.git
+git clone https://github.com/<YOUR_USERNAME>/gstack-industrial.git
 cd gstack-industrial
 
 # 2. Install dependencies
@@ -242,7 +242,7 @@ fix(matcher): handle empty message gracefully
 
 當你的改動影響到文件時，請更新：
 
-- **README.md** — 主要文件（中英文版本）
+- **README.md** — 主要文件（English / zh-TW / ja）
 - **INSTALL.md** — 安裝指南
 - **docs/** — 詳細文件
   - `TEMPLATE_SYSTEM.md` — 模板系統
@@ -347,7 +347,7 @@ Want to contribute code? Awesome!
 
 ```bash
 # 1. Fork & Clone
-git clone https://github.com/YOUR_USERNAME/gstack-industrial.git
+git clone https://github.com/<YOUR_USERNAME>/gstack-industrial.git
 cd gstack-industrial
 
 # 2. Install dependencies
