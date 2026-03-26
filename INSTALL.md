@@ -9,12 +9,17 @@ cd gstack-industrial
 
 # 2. Run installer
 bun install
-# This automatically installs to ~/.claude/
-
-# 3. Test the installation
-cd ~/.claude/skills/templates/skill-router
-bun run test-cli.ts "I need to brainstorm" --debug
+# Automatically installs to ~/.claude/
 ```
+
+The installer handles everything:
+- Copies skill-router, hooks, and standard sections
+- Registers `UserPromptSubmit` hook (auto-suggest on every message)
+- Registers `SessionStart` hook (auto-discover new skills on session start)
+- Runs initial auto-discovery to populate `matchers.json`
+- Creates default config at `~/.claude/config/skill-router.json`
+
+Installation is idempotent — safe to run multiple times.
 
 ---
 
@@ -39,9 +44,11 @@ cp -r skill-router/* ~/.claude/skills/templates/skill-router/
 # Copy standard sections
 cp standard-sections/*.md ~/.claude/skills/templates/
 
-# Copy hook
+# Copy hooks
 cp hooks/skill-router-before-message.ts ~/.claude/hooks/
+cp hooks/skill-discovery-session-start.sh ~/.claude/hooks/
 chmod +x ~/.claude/hooks/skill-router-before-message.ts
+chmod +x ~/.claude/hooks/skill-discovery-session-start.sh
 ```
 
 ### Step 2: Configure
@@ -64,33 +71,49 @@ Create `~/.claude/config/skill-router.json`:
 }
 ```
 
-### Step 3: Enable Hook (Optional)
+### Step 3: Register Hooks
 
-To enable automatic skill suggestions, add to `~/.claude/settings.json`:
+Add to `~/.claude/settings.json`:
 
 ```json
 {
   "hooks": {
-    "beforeMessage": "~/.claude/hooks/skill-router-before-message.ts"
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun run ~/.claude/hooks/skill-router-before-message.ts"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/skill-discovery-session-start.sh"
+          }
+        ]
+      }
+    ]
   }
 }
+```
+
+### Step 4: Run Auto-Discovery
+
+```bash
+cd ~/.claude/skills/templates/skill-router
+bun run auto-discover.ts
 ```
 
 ---
 
 ## Verification
-
-### Test Template Generator
-
-```bash
-cd ~/.claude/skills/templates
-bun run skill-router/gen-skill-docs.ts --check
-```
-
-Expected output:
-```
-✅ All template-based skills in sync
-```
 
 ### Test Skill Router
 
@@ -103,14 +126,16 @@ bun run test-cli.ts "The test is failing" --debug
 bun run test-cli.ts "Ready to merge" --multi
 ```
 
-Expected output:
-```
-Loaded 20 skill matchers
+### Test Auto-Discovery
 
-💡 Suggestion: Use @brainstorming for this task
-Brainstorm ideas with structured thinking
+```bash
+cd /path/to/gstack-industrial
 
-(Say "yes" to run, or "stop suggesting" to disable)
+# Preview what would be discovered (no write)
+bun run discover:dry
+
+# Actually scan and update
+bun run discover
 ```
 
 ### Test Hook Integration
@@ -119,6 +144,24 @@ Brainstorm ideas with structured thinking
 cd ~/.claude/hooks
 bun run skill-router-before-message.ts "I need to review my code"
 ```
+
+---
+
+## Configuration Reference
+
+### `~/.claude/config/skill-router.json`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | boolean | `true` | Enable/disable all suggestions |
+| `threshold` | number | `80` | Minimum match score to trigger suggestion |
+| `maxSuggestionsPerSession` | number | `10` | Max suggestions per conversation |
+| `cooldownMinutes` | number | `5` | Cooldown between suggestions |
+| `disabledSkills` | string[] | `[]` | Skills to never suggest |
+| `priorityBoosts` | object | `{}` | Skill name -> priority boost (number) |
+| `quietHours.enabled` | boolean | `false` | Enable quiet hours |
+| `quietHours.start` | string | `"22:00"` | Quiet hours start (HH:MM) |
+| `quietHours.end` | string | `"08:00"` | Quiet hours end (HH:MM) |
 
 ---
 
@@ -141,46 +184,48 @@ ls   # Should see skill-router/, hooks/, etc.
 
 ### "Permission denied"
 
-Make hook executable:
+Make hooks executable:
 ```bash
 chmod +x ~/.claude/hooks/skill-router-before-message.ts
+chmod +x ~/.claude/hooks/skill-discovery-session-start.sh
 ```
 
-### "Module not found"
+### Auto-discovery finds 0 skills
 
-Install dependencies:
-```bash
-cd ~/Developer/Projects/gstack-industrial
-bun install
+Ensure you have SKILL.md files with valid frontmatter under `~/.claude/skills/`:
+```yaml
+---
+name: my-skill
+description: What this skill does
+---
 ```
+
+### Hook not firing
+
+Check that the hook is registered in `~/.claude/settings.json` under the correct event type (`UserPromptSubmit` or `SessionStart`).
 
 ---
 
 ## Uninstall
 
 ```bash
-# Remove files
+# Remove installed files
 rm -rf ~/.claude/skills/templates/skill-router
 rm ~/.claude/skills/templates/*-section.md
 rm ~/.claude/hooks/skill-router-before-message.ts
+rm ~/.claude/hooks/skill-discovery-session-start.sh
 rm ~/.claude/config/skill-router.json
 rm ~/.claude/sessions/skill-router-state.json
+rm ~/.claude/state/skill-discovery-last-run
 
-# Remove hook from settings.json
-# Manually edit ~/.claude/settings.json and remove the beforeMessage hook
+# Manually edit ~/.claude/settings.json to remove the hooks:
+# - Remove the UserPromptSubmit entry containing "skill-router-before-message"
+# - Remove the SessionStart entry containing "skill-discovery-session-start"
 ```
-
----
-
-## Next Steps
-
-1. **Read the Documentation**: [README.md](README.md)
-2. **Create Your First Matcher**: [docs/CREATING_MATCHERS.md](docs/CREATING_MATCHERS.md)
-3. **Convert Skills to Templates**: [docs/TEMPLATE_SYSTEM.md](docs/TEMPLATE_SYSTEM.md)
 
 ---
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/gstack-industrial/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/gstack-industrial/discussions)
+- **Issues**: [GitHub Issues](https://github.com/kevintseng/gstack-industrial/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/kevintseng/gstack-industrial/discussions)

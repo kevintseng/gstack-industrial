@@ -1,7 +1,7 @@
 {
   "name": "gstack-industrial",
-  "version": "1.0.0",
-  "description": "Industrial-grade implementation of gstack for Claude Code",
+  "version": "1.1.0",
+  "description": "Auto-discover and suggest the right Claude Code skill at the right time",
   "type": "module",
   "scripts": {
     "install": "bun run install.ts",
@@ -9,7 +9,9 @@
     "generate": "bun run skill-router/gen-skill-docs.ts",
     "check": "bun run skill-router/gen-skill-docs.ts --check",
     "watch": "bun run skill-router/gen-skill-docs.ts --watch",
-    "test-router": "bun run skill-router/test-cli.ts"
+    "test-router": "bun run skill-router/test-cli.ts",
+    "discover": "bun run skill-router/auto-discover.ts",
+    "discover:dry": "bun run skill-router/auto-discover.ts --dry-run --verbose"
   },
   "keywords": [
     "claude-code",
@@ -19,7 +21,7 @@
     "skill-router",
     "template-system"
   ],
-  "author": "Your Name",
+  "author": "Kevin Tseng",
   "license": "MIT",
   "repository": {
     "type": "git",

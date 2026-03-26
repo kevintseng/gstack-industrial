@@ -1,106 +1,143 @@
 # gstack-industrial
 
-> [English](README.en.md) | **繁體中文**
+> **English** | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md)
 
-**讓 Claude Code 自動幫你選對工具**
+**Let Claude Code automatically pick the right skill for you**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Bun](https://img.shields.io/badge/Bun-1.0+-black?logo=bun)](https://bun.sh)
 
 ---
 
-## 💡 這是什麼？
+## What is this?
 
-你有 168 個 Claude Code skills，但從來記不住該用哪個？
+You have hundreds of Claude Code skills installed but can never remember which one to use?
 
-**gstack-industrial** 幫你解決這個問題：
+**gstack-industrial** solves this:
 
-🤖 **自動建議** — 根據你的訊息和專案狀態，自動推薦最適合的 skill
-📝 **模板系統** — 一次寫好標準，自動套用到所有 skills
-⚡ **零干擾** — 只在真正有用的時候才提示，不會煩你
-
----
-
-## 📊 與原版 gstack 的差異
-
-| 原版 gstack | gstack-industrial |
-|-------------|-------------------|
-| 提供 3 個範本檔案 | ✅ **自動生成** skills（不用手動複製貼上）|
-| 需要自己記得用哪個 skill | ✅ **自動建議**最適合的 skill |
-| 手動更新所有 skills | ✅ 改一次範本，**一鍵更新**全部 |
-| - | ✅ 防煩人機制（冷卻時間、次數限制）|
-
-**簡單說**：gstack 提供標準，gstack-industrial 幫你自動化執行
+- **Auto-Discovery** — Scans all installed SKILL.md files and builds routing rules automatically
+- **Auto-Suggest** — Recommends the best skill based on your message and project state
+- **Template System** — Write standards once, auto-apply to all skills
+- **Zero Interruption** — Only suggests when truly helpful, won't spam you
 
 ---
 
-## 🚀 快速開始
+## Comparison with original gstack
 
-### 安裝（2 分鐘）
+| Original gstack | gstack-industrial |
+|-----------------|-------------------|
+| Provides 28 skills | **Auto-routes** to any installed skill |
+| You need to remember which skill | **Auto-suggests** the best skill |
+| Manually install, manually remember | **Auto-scans** new skills on session start |
+| - | Anti-spam mechanisms (cooldown, limits) |
+| - | Template system (shared standard sections) |
+
+**In short**: gstack provides skills, gstack-industrial automates discovery and routing
+
+---
+
+## Quick Start
+
+### Installation (2 minutes)
 
 ```bash
-# 1. 下載
+# 1. Clone
 git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
-# 2. 自動安裝
+# 2. Auto-install
 bun install
-# 自動複製到 ~/.claude/ 目錄
 ```
 
-完成！重啟 Claude Code 就能用。
+The installer automatically:
+- Copies skill-router to `~/.claude/skills/templates/skill-router/`
+- Copies hooks to `~/.claude/hooks/`
+- Scans all installed skills and builds routing rules
+- Registers UserPromptSubmit hook (auto-suggest)
+- Registers SessionStart hook (auto-discovery)
+- Creates default config
 
-### 使用方式
+Installation is idempotent — running it again won't create duplicate hooks.
 
-**自動模式**（推薦）：什麼都不用做，Claude 會在適當時機自動建議
+### Usage
+
+**Auto mode** (recommended): Do nothing, Claude will auto-suggest at the right time
 
 ```
-你說："我需要思考一下這個功能要怎麼做"
-Claude 自動回應：
+You say: "I need to think about how to implement this feature"
+Claude auto-responds:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 建議使用 @brainstorming
-   用結構化思考整理想法
-   (回答 "yes" 執行，或 "stop suggesting" 關閉)
+  Suggestion: Use @brainstorming
+   Organize ideas with structured thinking
+   (Say "yes" to run, or "stop suggesting" to disable)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**手動測試**：想看看它怎麼工作？
+**Manual testing**:
 
 ```bash
 cd ~/.claude/skills/templates/skill-router
-bun run test-cli.ts "我要 review 程式碼" --debug
+bun run test-cli.ts "I need to review my code" --debug
 ```
 
 ---
 
-## 🔍 它怎麼知道該建議什麼？
+## Auto-Discovery (v1.1.0)
 
-**Smart Router 會分析：**
+On every Claude Code session start, auto-discover scans all SKILL.md files under `~/.claude/skills/`:
 
-1. **你說的話** — 「brainstorm」→ 建議 brainstorming skill
-2. **專案狀態** — 有未提交的檔案 → 建議 code review
-3. **開發階段** — 說「準備 merge」→ 建議 finishing-branch skill
+1. **Parse frontmatter** — Reads `name` and `description` fields
+2. **Extract keywords** — Pulls trigger words from descriptions (quoted phrases, slash commands, key terms)
+3. **Infer phase** — Determines applicable development phase (think/plan/build/review/test/ship)
+4. **Merge into matchers.json** — New skills are added automatically; manually-written rules are never overwritten
 
-**不會煩你的機制：**
-- 5 分鐘內不重複建議
-- 每次對話最多 10 個建議
-- 同個 skill 不會連續建議 3 次
+**Features:**
+- Deduplication: when the same skill exists in multiple sources, priority is gstack > plugin > standalone
+- Idempotent: running repeatedly won't create duplicate entries
+- Manual rule protection: `autoDiscovered: true` flag distinguishes auto vs manual rules
+- 1-hour cooldown: avoids re-scanning on every session resume
+
+**Manual trigger:**
+
+```bash
+# Scan and update
+bun run discover
+
+# Preview (no write)
+bun run discover:dry
+```
 
 ---
 
-## ⚙️ 進階設定（選用）
+## How does it know what to suggest?
 
-預設已經可以用，但你可以調整：
+**Smart Router analyzes:**
 
-**關閉某些 skills 的建議：**
-編輯 `~/.claude/config/skill-router.json`：
+1. **Your words** — "brainstorm" -> suggests brainstorming skill
+2. **Project state** — Uncommitted files -> suggests code review
+3. **Development phase** — "ready to merge" -> suggests finishing-branch skill
+4. **Score threshold** — Only skills scoring >= 80 are suggested
+
+**Anti-spam mechanisms:**
+- No repeat suggestions within 5 minutes
+- Max 10 suggestions per conversation
+- Same skill won't be suggested 3 times in a row
+
+---
+
+## Advanced Configuration (Optional)
+
+Works out of the box, but you can customize:
+
+**Disable suggestions for certain skills:**
+Edit `~/.claude/config/skill-router.json`:
 ```json
 {
   "disabledSkills": ["skill-judge"]
 }
 ```
 
-**設定安靜時間（晚上不打擾）：**
+**Set quiet hours (no interruptions at night):**
 ```json
 {
   "quietHours": {
@@ -111,39 +148,82 @@ bun run test-cli.ts "我要 review 程式碼" --debug
 }
 ```
 
-詳細說明：[INSTALL.md](INSTALL.md)
+**Boost priority for specific skills:**
+```json
+{
+  "priorityBoosts": {
+    "brainstorming": 20,
+    "systematic-debugging": 15
+  }
+}
+```
+
+Details: [INSTALL.md](INSTALL.md)
 
 ---
 
-## 📚 延伸閱讀
+## File Structure
 
-- **[安裝指南](INSTALL.md)** — 完整安裝步驟與問題排解
-- **[原版 gstack](https://github.com/garrytan/gstack)** — 了解背後的哲學
-
----
-
-## 🤝 參與貢獻
-
-歡迎提交 PR！流程：
-
-1. Fork 這個 repo
-2. 建立 feature branch
-3. 測試你的改動
-4. 提交 PR
-
----
-
-## 📜 授權
-
-MIT License - 詳見 [LICENSE](LICENSE)
-
----
-
-## 🙏 致謝
-
-- **[Garry Tan](https://github.com/garrytan)** — gstack 原創哲學
-- **[Claude Code](https://claude.ai/code)** — 整合平台
+```
+gstack-industrial/
+├── skill-router/
+│   ├── auto-discover.ts          # Scans SKILL.md -> matchers.json
+│   ├── matchers.json             # Routing rules (manual + auto)
+│   ├── matcher-engine.ts         # Scoring engine
+│   ├── context-extractor.ts      # Context extraction
+│   ├── types.ts                  # Type definitions
+│   ├── index.ts                  # Router entry point
+│   ├── gen-skill-docs.ts         # Template generator
+│   ├── suggestion-formatter.ts   # Suggestion formatter
+│   └── test-cli.ts               # CLI test tool
+├── hooks/
+│   ├── skill-router-before-message.ts    # UserPromptSubmit hook
+│   └── skill-discovery-session-start.sh  # SessionStart hook
+├── standard-sections/            # Shared template sections
+├── install.ts                    # Install script
+├── package.json
+└── README.md
+```
 
 ---
 
-**用 ❤️ 為 Claude Code 社群打造**
+## Uninstall
+
+```bash
+# Remove installed files
+rm -rf ~/.claude/skills/templates/skill-router
+rm ~/.claude/skills/templates/*-section.md
+rm ~/.claude/hooks/skill-router-before-message.ts
+rm ~/.claude/hooks/skill-discovery-session-start.sh
+rm ~/.claude/config/skill-router.json
+rm ~/.claude/sessions/skill-router-state.json
+rm ~/.claude/state/skill-discovery-last-run
+
+# Manually edit ~/.claude/settings.json to remove related hooks
+```
+
+---
+
+## Contributing
+
+PRs welcome! Process:
+
+1. Fork this repo
+2. Create a feature branch
+3. Test your changes
+4. Submit PR
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+---
+
+## License
+
+MIT License - see [LICENSE](LICENSE)
+
+---
+
+## Acknowledgments
+
+- **[Garry Tan](https://github.com/garrytan)** — Original gstack philosophy
+- **[Claude Code](https://claude.ai/code)** — Integration platform
