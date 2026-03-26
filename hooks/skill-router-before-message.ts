@@ -130,11 +130,25 @@ function parseUserResponse(message: string): {
 }
 
 async function main() {
-  // Get user message from stdin
-  const message = process.argv[2] || '';
+  // Read user message from stdin (Claude Code hook protocol)
+  let message = '';
+  try {
+    const raw = await Bun.stdin.text();
+    const trimmed = raw.trim();
+    if (trimmed) {
+      const data = JSON.parse(trimmed);
+      message = data.prompt || data.message || '';
+    }
+  } catch {
+    // Ignore stdin parse errors
+  }
+
+  // Fallback to argv for CLI testing: bun run hook.ts "message"
+  if (!message) {
+    message = process.argv[2] || '';
+  }
 
   if (!message) {
-    // No message to process
     process.exit(0);
   }
 
@@ -160,20 +174,23 @@ async function main() {
   if (response.isResponse) {
     if (response.action === 'stop') {
       updateSessionState({ disabledThisSession: true });
-      console.log('✓ Skill suggestions disabled for this session');
+      process.stdout.write(JSON.stringify({
+        additionalContext: '✓ Skill suggestions disabled for this session',
+      }));
       process.exit(0);
     }
 
     if (response.action === 'accept' && state.lastSuggestedSkill) {
-      // User accepted suggestion - invoke skill
-      console.log(`\n💡 Invoking @${state.lastSuggestedSkill}...\n`);
-      // Note: Actual skill invocation would be handled by Claude Code
-      // This just outputs the signal
+      // User accepted suggestion - signal Claude to invoke skill
+      process.stdout.write(JSON.stringify({
+        additionalContext: `💡 User accepted suggestion. Invoke the skill: @${state.lastSuggestedSkill}`,
+      }));
       process.exit(0);
     }
 
     if (response.action === 'decline') {
       // User declined - continue normally
+      process.stdout.write(JSON.stringify({}));
       process.exit(0);
     }
   }
@@ -235,12 +252,15 @@ async function main() {
     process.exit(0);
   }
 
-  // Output suggestion
-  console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log(`💡 Suggestion: Use @${match.skill} for this task`);
-  console.log(`   ${match.explanation}`);
-  console.log(`   (Say "yes" to run, or "stop suggesting" to disable)`);
-  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+  // Output suggestion as Claude Code hook additionalContext JSON
+  const suggestion = [
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    `💡 Suggestion: Use @${match.skill} for this task`,
+    `   ${match.explanation}`,
+    `   (Say "yes" to run, or "stop suggesting" to disable)`,
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+  ].join('\n');
+  process.stdout.write(JSON.stringify({ additionalContext: suggestion }));
 
   // Update session state
   updateSessionState({

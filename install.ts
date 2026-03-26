@@ -5,7 +5,7 @@
  * Installs template system and skill router to Claude Code
  */
 
-import { copyFileSync, mkdirSync, existsSync, writeFileSync } from 'fs';
+import { copyFileSync, mkdirSync, existsSync, writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -125,7 +125,39 @@ async function main() {
   }
   console.log('');
 
-  // 6. Success message
+  // 6. Register hook in settings.json (idempotent)
+  console.log('🔧 Registering hook in settings.json...');
+  const settingsPath = join(CLAUDE_DIR, 'settings.json');
+  try {
+    let settings: any = {};
+    if (existsSync(settingsPath)) {
+      settings = JSON.parse(readFileSync(settingsPath, 'utf-8'));
+    }
+    if (!settings.hooks) settings.hooks = {};
+    if (!settings.hooks.UserPromptSubmit) settings.hooks.UserPromptSubmit = [];
+
+    const hookCommand = `bun run ${hookDest}`;
+    const hasHook = settings.hooks.UserPromptSubmit.some((entry: any) =>
+      entry.hooks?.some((h: any) => h.command?.includes('skill-router-before-message'))
+    );
+
+    if (!hasHook) {
+      settings.hooks.UserPromptSubmit.push({
+        matcher: '*',
+        hooks: [{ type: 'command', command: hookCommand }],
+      });
+      writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      console.log(`✅ Registered UserPromptSubmit hook`);
+    } else {
+      console.log(`ℹ️  Hook already registered in settings.json`);
+    }
+  } catch (error) {
+    console.error('❌ Failed to register hook:', error);
+    console.log('   Manual step: add to ~/.claude/settings.json under hooks.UserPromptSubmit');
+  }
+  console.log('');
+
+  // 7. Success message
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('✅ Installation complete!');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -136,15 +168,7 @@ async function main() {
   console.log('   cd ~/.claude/skills/templates/skill-router');
   console.log('   bun run test-cli.ts "I need to brainstorm" --debug');
   console.log('');
-  console.log('2. Enable hookify integration:');
-  console.log('   Add to ~/.claude/settings.json:');
-  console.log('   {');
-  console.log('     "hooks": {');
-  console.log('       "beforeMessage": "~/.claude/hooks/skill-router-before-message.ts"');
-  console.log('     }');
-  console.log('   }');
-  console.log('');
-  console.log('3. Generate template-based skills:');
+  console.log('2. Generate template-based skills:');
   console.log('   cd ~/.claude/skills/templates');
   console.log('   bun run skill-router/gen-skill-docs.ts');
   console.log('');
