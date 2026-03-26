@@ -1,14 +1,22 @@
 #!/bin/bash
 # skill-discovery-session-start.sh
 #
-# SessionStart hook — runs auto-discover to keep matchers.json up-to-date.
+# SessionStart hook — resets session state and runs auto-discover.
 # Designed to be fast (<1s) and silent on success.
 
 ROUTER_DIR="$HOME/.claude/skills/templates/skill-router"
 AUTO_DISCOVER="$ROUTER_DIR/auto-discover.ts"
 LAST_RUN_FILE="$HOME/.claude/state/skill-discovery-last-run"
+SESSION_STATE="$HOME/.claude/sessions/skill-router-state.json"
 
-# Only run if auto-discover exists
+# Reset skill-router session state on every new session
+if [ -f "$SESSION_STATE" ]; then
+  cat > "$SESSION_STATE" << 'RESET'
+{"suggestionsCount":0,"lastSuggestionTime":0,"lastSuggestedSkill":null,"disabledThisSession":false,"suggestionHistory":[]}
+RESET
+fi
+
+# Only run auto-discover if it exists
 [ -f "$AUTO_DISCOVER" ] || exit 0
 
 # Rate limit: skip if last run was <1 hour ago
