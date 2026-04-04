@@ -14,7 +14,7 @@
 [![Stars](https://img.shields.io/github/stars/kevintseng/gstack-industrial?style=social)](https://github.com/kevintseng/gstack-industrial/stargazers)
 [![Issues](https://img.shields.io/github/issues/kevintseng/gstack-industrial)](https://github.com/kevintseng/gstack-industrial/issues)
 
-[**English**](README.md) | [**繁體中文**](README.zh-TW.md) | [**日本語**](README.ja.md)
+[**English**](README.md) | [**繁體中文**](README.zh-TW.md) | [**简体中文**](README.zh-CN.md) | [**日本語**](README.ja.md) | [**한국어**](README.ko.md) | [**Português**](README.pt-BR.md) | [**Bahasa**](README.id.md) | [**Tiếng Việt**](README.vi.md)
 
 </div>
 
@@ -134,12 +134,15 @@ bun run discover:dry
 1. **你說的話** — 「brainstorm」→ 建議 brainstorming skill
 2. **專案狀態** — 有未提交的檔案 → 建議 code review
 3. **開發階段** — 說「準備 merge」→ 建議 finishing-branch skill
-4. **分數門檻** — 只有分數 >= 80 的 skill 才會被建議
+4. **Repo 模式** — Solo dev 用較低門檻（60），collaborative 用較高門檻（85）
+5. **你的歷史** — 提升你常接受的 skill 優先級，降低你常拒絕的
+6. **Skill 模式** — 根據你過去的序列預測下一個 skill（透過 gstack timeline）
 
 **不會煩你的機制：**
-- 5 分鐘內不重複建議
-- 每次對話最多 10 個建議
+- 冷卻時間：5 分鐘內不重複建議
+- Session 上限：每個 session 最多 500 個建議（達到上限時顯示可見警告，不會靜默失敗）
 - 同個 skill 不會連續建議 3 次
+- 回饋驅動：被你拒絕的 skill 優先級會逐步降低
 
 ---
 
@@ -173,6 +176,26 @@ bun run discover:dry
     "brainstorming": 20,
     "systematic-debugging": 15
   }
+}
+```
+
+**調整 repo 模式門檻：**
+```json
+{
+  "repoModeThresholds": {
+    "solo": 60,
+    "collaborative": 85,
+    "unknown": 80
+  }
+}
+```
+
+**調整回饋敏感度：**
+```json
+{
+  "feedbackBoost": 20,
+  "feedbackPenalty": 30,
+  "showLimitWarnings": true
 }
 ```
 
@@ -215,6 +238,7 @@ rm ~/.claude/hooks/skill-router-before-message.ts
 rm ~/.claude/hooks/skill-discovery-session-start.sh
 rm ~/.claude/config/skill-router.json
 rm ~/.claude/sessions/skill-router-state.json
+rm ~/.claude/sessions/skill-router-feedback.json
 rm ~/.claude/state/skill-discovery-last-run
 
 # 手動編輯 ~/.claude/settings.json 移除相關 hooks
