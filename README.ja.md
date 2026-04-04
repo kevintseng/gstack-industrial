@@ -2,7 +2,7 @@
 
 > [English](README.md) | [繁體中文](README.zh-TW.md) | **日本語**
 
-**Claude Code が自動的に最適なスキルを選んでくれる**
+**Claude Code スキルの自動提案 — gstack の拡張であって、置き換えではない**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Bun](https://img.shields.io/badge/Bun-1.0+-black?logo=bun)](https://bun.sh)
@@ -17,22 +17,27 @@ Claude Code のスキルを何百個もインストールしたのに、どれ�
 
 - **自動検出** — インストール済みの全 SKILL.md をスキャンし、ルーティングルールを自動構築
 - **自動提案** — メッセージとプロジェクトの状態に基づいて最適なスキルを推薦
-- **テンプレートシステム** — 標準を一度書くだけで、全スキルに自動適用
+- **使用フィードバック** — 承認/却下を学習し、優先度を自動調整
+- **シーケンス学習** — gstack の timeline を読み、次に使うスキルを予測
+- **リポモード対応** — Solo dev は低い閾値、collaborative は高い閾値（gstack 経由）
 - **ゼロ干渉** — 本当に役立つ時だけ提案、スパムしません
+
+すべての状態は**ローカルのみ**に保存。テレメトリなし、ネットワーク呼び出しなし。
 
 ---
 
-## オリジナル gstack との違い
+## gstack との関係
 
-| オリジナル gstack | gstack-industrial |
-|------------------|-------------------|
-| 28 個のスキルを提供 | インストール済みの全スキルに**自動ルーティング** |
-| どのスキルを使うか自分で覚える必要がある | 最適なスキルを**自動提案** |
-| スキルを手動インストール後、自分で記憶 | セッション開始時に新しいスキルを**自動スキャン** |
-| - | スパム防止メカニズム（クールダウン、回数制限） |
-| - | テンプレートシステム（標準セクション共有） |
+gstack-industrial は **gstack の上に重ねるレイヤー**であり、置き換えではありません。gstack のインフラを再利用します：
 
-**一言で言うと**：gstack はスキルを提供し、gstack-industrial は検出とルーティングを自動化します
+| gstack が提供 | gstack-industrial が追加 |
+|--------------|------------------------|
+| 36+ のスキル（ship、review、qa、brainstorming など）| **自動提案**：任意のインストール済みスキル |
+| `gstack-repo-mode` binary（solo/collaborative 検出）| **リポモード対応閾値**（gstack の出力を読む）|
+| `timeline.jsonl`（スキル完了追跡）| **シーケンス学習**（gstack timeline を読み次のスキルを予測）|
+| 手動呼び出し（`/ship`、`/review` など）| **積極的な提案** UserPromptSubmit hook 経由 |
+
+**gstack が必須** — まず gstack をインストールしてから、gstack-industrial をインストール。
 
 ---
 
@@ -116,12 +121,15 @@ bun run discover:dry
 1. **あなたの言葉** — 「brainstorm」→ brainstorming スキルを提案
 2. **プロジェクトの状態** — 未コミットのファイルがある → コードレビューを提案
 3. **開発フェーズ** — 「マージ準備完了」→ finishing-branch スキルを提案
-4. **スコア閾値** — スコア >= 80 のスキルのみ提案
+4. **リポモード** — Solo dev は低い閾値（60）、collaborative は高い閾値（85）
+5. **あなたの履歴** — 承認したスキルを優先、却下したスキルを低優先化
+6. **スキルパターン** — 過去のシーケンスから次のスキルを予測（gstack timeline 経由）
 
 **スパム防止メカニズム：**
-- 5分以内に同じ提案を繰り返さない
-- 1会話あたり最大10提案
+- クールダウン：5分以内に同じ提案を繰り返さない
+- セッション上限：1セッション最大 500 提案（上限到達時は可視の警告、サイレント失敗なし）
 - 同じスキルを3回連続で提案しない
+- フィードバックベース：却下したスキルは時間とともに優先度が下がる
 
 ---
 
@@ -155,6 +163,26 @@ bun run discover:dry
     "brainstorming": 20,
     "systematic-debugging": 15
   }
+}
+```
+
+**リポモード閾値の調整：**
+```json
+{
+  "repoModeThresholds": {
+    "solo": 60,
+    "collaborative": 85,
+    "unknown": 80
+  }
+}
+```
+
+**フィードバック感度の調整：**
+```json
+{
+  "feedbackBoost": 20,
+  "feedbackPenalty": 30,
+  "showLimitWarnings": true
 }
 ```
 
