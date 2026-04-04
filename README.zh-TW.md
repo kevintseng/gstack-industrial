@@ -2,7 +2,7 @@
 
 > [English](README.md) | **繁體中文** | [日本語](README.ja.md)
 
-**讓 Claude Code 自動幫你選對工具**
+**自動建議 Claude Code skill — 是 gstack 的增強，不是取代**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Bun](https://img.shields.io/badge/Bun-1.0+-black?logo=bun)](https://bun.sh)
@@ -17,22 +17,27 @@
 
 - **自動發現** — 掃描所有已安裝的 SKILL.md，自動建立路由規則
 - **自動建議** — 根據你的訊息和專案狀態，推薦最適合的 skill
-- **模板系統** — 一次寫好標準，自動套用到所有 skills
+- **使用回饋** — 學習你接受/拒絕的建議，自動調整優先順序
+- **序列學習** — 讀取 gstack 的 timeline，預測下一個你會用的 skill
+- **Repo 模式感知** — Solo dev 用較低門檻，collaborative 用較高門檻（透過 gstack）
 - **零干擾** — 只在真正有用的時候才提示，不會煩你
+
+所有狀態都是**本地存儲**。無 telemetry、無網路呼叫。
 
 ---
 
-## 與原版 gstack 的差異
+## 與 gstack 的關係
 
-| 原版 gstack | gstack-industrial |
-|-------------|-------------------|
-| 提供 28 個 skills | ✅ **自動路由**到任何已安裝的 skill |
-| 需要自己記得用哪個 skill | ✅ **自動建議**最適合的 skill |
-| 手動安裝 skill 後需自行記憶 | ✅ **Session 啟動時自動掃描**新 skill |
-| - | ✅ 防煩人機制（冷卻時間、次數限制）|
-| - | ✅ 模板系統（標準 section 共用）|
+gstack-industrial 是 **gstack 的上層加強**，不是取代。它重用 gstack 的基礎設施：
 
-**簡單說**：gstack 提供 skills，gstack-industrial 幫你自動化發現和路由
+| gstack 提供 | gstack-industrial 加上 |
+|------------|----------------------|
+| 36+ 個 skills（ship、review、qa、brainstorming 等）| **自動建議**任何已安裝的 skill |
+| `gstack-repo-mode` binary（solo/collaborative 偵測）| **Repo 模式感知門檻**（讀 gstack 輸出）|
+| `timeline.jsonl`（skill 完成記錄）| **序列學習**（讀 gstack timeline 預測下一個 skill）|
+| 手動呼叫（`/ship`、`/review` 等）| **主動建議**透過 UserPromptSubmit hook |
+
+**需要先裝 gstack** — 先裝 gstack，再裝 gstack-industrial。
 
 ---
 

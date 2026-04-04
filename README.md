@@ -2,7 +2,7 @@
 
 > **English** | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md)
 
-**Let Claude Code automatically pick the right skill for you**
+**Auto-suggest the right Claude Code skill for your task — enhancement to gstack, not a replacement.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Bun](https://img.shields.io/badge/Bun-1.0+-black?logo=bun)](https://bun.sh)
@@ -17,22 +17,27 @@ You have hundreds of Claude Code skills installed but can never remember which o
 
 - **Auto-Discovery** — Scans all installed SKILL.md files and builds routing rules automatically
 - **Auto-Suggest** — Recommends the best skill based on your message and project state
-- **Template System** — Write standards once, auto-apply to all skills
+- **Usage feedback** — Learns from what you accept vs dismiss, boosts/penalizes priority
+- **Pair learning** — Reads gstack's timeline, predicts next skill after you accept one
+- **Repo-mode aware** — Lower threshold for solo devs, higher for collaborative (via gstack)
 - **Zero Interruption** — Only suggests when truly helpful, won't spam you
+
+All state is **local-only**. No telemetry. No network calls.
 
 ---
 
-## Comparison with original gstack
+## Relationship with gstack
 
-| Original gstack | gstack-industrial |
-|-----------------|-------------------|
-| Provides 28 skills | **Auto-routes** to any installed skill |
-| You need to remember which skill | **Auto-suggests** the best skill |
-| Manually install, manually remember | **Auto-scans** new skills on session start |
-| - | Anti-spam mechanisms (cooldown, limits) |
-| - | Template system (shared standard sections) |
+gstack-industrial is a **layer on top of gstack**, not a replacement. It reuses gstack's infrastructure:
 
-**In short**: gstack provides skills, gstack-industrial automates discovery and routing
+| What gstack provides | What gstack-industrial adds |
+|----------------------|----------------------------|
+| 36+ skills (ship, review, qa, brainstorming, etc.) | **Auto-suggest** any installed skill based on your message |
+| `gstack-repo-mode` binary (solo/collaborative detection) | **Repo-mode aware thresholds** (reads gstack's output) |
+| `timeline.jsonl` (skill completion tracking) | **Pair learning** (reads gstack's timeline to predict next skill) |
+| Manual skill invocation (`/ship`, `/review`, etc.) | **Proactive suggestions** via UserPromptSubmit hook |
+
+**gstack is required** — install gstack first, then gstack-industrial.
 
 ---
 
@@ -116,12 +121,15 @@ bun run discover:dry
 1. **Your words** — "brainstorm" -> suggests brainstorming skill
 2. **Project state** — Uncommitted files -> suggests code review
 3. **Development phase** — "ready to merge" -> suggests finishing-branch skill
-4. **Score threshold** — Only skills scoring >= 80 are suggested
+4. **Repo mode** — Lower threshold for solo devs (60), higher for collaborative (85)
+5. **Your history** — Boosts skills you often accept, penalizes ones you dismiss
+6. **Skill patterns** — Predicts next skill based on your past sequences (via gstack timeline)
 
 **Anti-spam mechanisms:**
-- No repeat suggestions within 5 minutes
-- Max 10 suggestions per conversation
+- Cooldown: no repeat suggestions within 5 minutes
+- Session cap: 500 suggestions max per session (visible warning when hit, not silent)
 - Same skill won't be suggested 3 times in a row
+- Feedback-based: skills you dismiss get lower priority over time
 
 ---
 
@@ -155,6 +163,26 @@ Edit `~/.claude/config/skill-router.json`:
     "brainstorming": 20,
     "systematic-debugging": 15
   }
+}
+```
+
+**Tune repo-mode thresholds:**
+```json
+{
+  "repoModeThresholds": {
+    "solo": 60,
+    "collaborative": 85,
+    "unknown": 80
+  }
+}
+```
+
+**Tune feedback sensitivity:**
+```json
+{
+  "feedbackBoost": 20,
+  "feedbackPenalty": 30,
+  "showLimitWarnings": true
 }
 ```
 
@@ -197,6 +225,7 @@ rm ~/.claude/hooks/skill-router-before-message.ts
 rm ~/.claude/hooks/skill-discovery-session-start.sh
 rm ~/.claude/config/skill-router.json
 rm ~/.claude/sessions/skill-router-state.json
+rm ~/.claude/sessions/skill-router-feedback.json
 rm ~/.claude/state/skill-discovery-last-run
 
 # Manually edit ~/.claude/settings.json to remove related hooks
