@@ -1,6 +1,6 @@
 {
   "name": "gstack-industrial",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Auto-discover and suggest the right Claude Code skill at the right time",
   "type": "module",
   "scripts": {
@@ -15,11 +15,17 @@
   },
   "keywords": [
     "claude-code",
+    "claude",
     "gstack",
     "ai",
     "automation",
     "skill-router",
-    "template-system"
+    "template-system",
+    "anthropic",
+    "ai-agent",
+    "productivity",
+    "developer-tools",
+    "hook"
   ],
   "author": "Kevin Tseng",
   "license": "MIT",

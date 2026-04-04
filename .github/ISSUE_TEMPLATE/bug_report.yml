@@ -1,0 +1,70 @@
+name: Bug Report
+description: Report a bug in gstack-industrial
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill in the details below.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+      placeholder: e.g. "Skill router stopped suggesting after ~10 messages"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `bun install`
+        2. Say "I need to debug a bug"
+        3. ...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: gstack-industrial version
+      placeholder: v1.2.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Linux
+        - Windows (WSL)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Your skill-router.json config
+      description: Paste `~/.claude/config/skill-router.json` (remove any sensitive info)
+      render: json
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output or logs
+      render: shell

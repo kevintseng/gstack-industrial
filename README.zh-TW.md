@@ -1,11 +1,24 @@
+<div align="center">
+
 # gstack-industrial
 
-> [English](README.md) | **繁體中文** | [日本語](README.ja.md)
+**自動建議最適合你任務的 Claude Code skill**
 
-**自動建議 Claude Code skill — 是 gstack 的增強，不是取代**
+*建立在 [gstack](https://github.com/garrytan/gstack) 之上的增強層 — 不是取代*
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Bun](https://img.shields.io/badge/Bun-1.0+-black?logo=bun)](https://bun.sh)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/github/v/release/kevintseng/gstack-industrial?style=for-the-badge&color=blue)](https://github.com/kevintseng/gstack-industrial/releases)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-D97757?style=for-the-badge)](https://claude.ai/code)
+[![Bun](https://img.shields.io/badge/Bun-1.0+-black?style=for-the-badge&logo=bun)](https://bun.sh)
+
+[![Stars](https://img.shields.io/github/stars/kevintseng/gstack-industrial?style=social)](https://github.com/kevintseng/gstack-industrial/stargazers)
+[![Issues](https://img.shields.io/github/issues/kevintseng/gstack-industrial)](https://github.com/kevintseng/gstack-industrial/issues)
+
+[**English**](README.md) | [**繁體中文**](README.zh-TW.md) | [**日本語**](README.ja.md)
+
+</div>
+
+---
 
 ---
 

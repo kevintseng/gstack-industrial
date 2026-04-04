@@ -1,0 +1,41 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. Keep in mind: gstack-industrial is an enhancement layer on gstack. Features that duplicate gstack functionality are out of scope.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem you're trying to solve
+      description: What are you trying to do? What's blocking you?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would the ideal behavior look like?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you've thought about
+
+  - type: checkboxes
+    id: scope-check
+    attributes:
+      label: Scope check
+      description: gstack-industrial scope
+      options:
+        - label: This is about skill suggestion/routing (not skill content)
+        - label: This doesn't duplicate something gstack already does
+        - label: This doesn't require network calls or telemetry
