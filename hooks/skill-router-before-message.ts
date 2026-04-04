@@ -16,7 +16,6 @@ const STATE_DIR = resolve(homedir(), '.claude/sessions');
 const CONFIG_PATH = resolve(homedir(), '.claude/config/skill-router.json');
 const SESSION_STATE_PATH = resolve(STATE_DIR, 'skill-router-state.json');
 const FEEDBACK_PATH = resolve(STATE_DIR, 'skill-router-feedback.json');
-const SEQUENCES_PATH = resolve(STATE_DIR, 'skill-router-sequences.json');
 
 // ─── Loaders ──────────────────────────────────────────────────────────
 
@@ -141,72 +140,92 @@ function getFeedbackScore(skill: string): number {
   return (acceptRate - 0.5) * 2; // Range: -1 to +1
 }
 
-// ─── Sequence Learning (pair detection) ───────────────────────────────
+// ─── Sequence Learning (reads gstack's timeline.jsonl) ────────────────
 
-interface SequenceRecord {
-  pair: string;
-  count: number;
-  lastSeen: number;
-}
+// Reuses gstack's timeline.jsonl (no duplicate data store).
+// gstack records skill completions per branch in ~/.gstack/projects/{slug}/timeline.jsonl
 
-function loadSequences(): Record<string, SequenceRecord> {
+function getTimelinePath(): string | null {
+  // Read slug from gstack
+  const slugBin = resolve(homedir(), '.claude/skills/gstack/bin/gstack-slug');
+  if (!existsSync(slugBin)) return null;
+
   try {
-    if (existsSync(SEQUENCES_PATH)) {
-      return JSON.parse(readFileSync(SEQUENCES_PATH, 'utf-8'));
-    }
-  } catch {}
-  return {};
-}
-
-function saveSequences(sequences: Record<string, SequenceRecord>) {
-  try {
-    writeFileSync(SEQUENCES_PATH, JSON.stringify(sequences, null, 2));
-  } catch {}
-}
-
-function recordSequence(prev: string | null, current: string) {
-  if (!prev || prev === current) return;
-  const pair = `${prev}->${current}`;
-  const sequences = loadSequences();
-  if (!sequences[pair]) {
-    sequences[pair] = { pair, count: 0, lastSeen: 0 };
+    const result = spawnSync(slugBin, [], { encoding: 'utf-8', timeout: 2000 });
+    if (result.status !== 0 || !result.stdout) return null;
+    // Output: "SLUG=kevintseng-xylon-studio" or similar
+    const match = result.stdout.match(/SLUG=([^\s;]+)/);
+    if (!match) return null;
+    const slug = match[1];
+    const timelinePath = resolve(homedir(), '.gstack/projects', slug, 'timeline.jsonl');
+    return existsSync(timelinePath) ? timelinePath : null;
+  } catch {
+    return null;
   }
-  sequences[pair].count++;
-  sequences[pair].lastSeen = Date.now();
-  saveSequences(sequences);
 }
 
 function predictNextSkill(lastAccepted: string | null): string | null {
   if (!lastAccepted) return null;
-  const sequences = loadSequences();
+  const timelinePath = getTimelinePath();
+  if (!timelinePath) return null;
 
-  let bestPair: SequenceRecord | null = null;
-  for (const pair of Object.values(sequences)) {
-    if (pair.pair.startsWith(`${lastAccepted}->`) && pair.count >= 2) {
-      if (!bestPair || pair.count > bestPair.count) {
-        bestPair = pair;
+  try {
+    const content = readFileSync(timelinePath, 'utf-8');
+    const lines = content.split('\n').filter(Boolean);
+
+    // Build pair counts from completed skill events
+    const skills: string[] = [];
+    for (const line of lines) {
+      try {
+        const entry = JSON.parse(line);
+        if (entry.event === 'completed' && entry.skill) {
+          skills.push(entry.skill);
+        }
+      } catch {}
+    }
+
+    // Count pairs where prev = lastAccepted
+    const pairCounts: Record<string, number> = {};
+    for (let i = 0; i < skills.length - 1; i++) {
+      if (skills[i] === lastAccepted && skills[i + 1] !== lastAccepted) {
+        const next = skills[i + 1];
+        pairCounts[next] = (pairCounts[next] || 0) + 1;
       }
     }
-  }
 
-  return bestPair ? bestPair.pair.split('->')[1] : null;
+    // Return skill with highest count (min 2 occurrences)
+    let bestSkill: string | null = null;
+    let bestCount = 1;
+    for (const [skill, count] of Object.entries(pairCounts)) {
+      if (count >= 2 && count > bestCount) {
+        bestSkill = skill;
+        bestCount = count;
+      }
+    }
+
+    return bestSkill;
+  } catch {
+    return null;
+  }
 }
 
-// ─── Repo Mode Detection (safe, no shell) ─────────────────────────────
+// ─── Repo Mode Detection (reuses gstack-repo-mode binary) ─────────────
 
 function detectRepoMode(): 'solo' | 'collaborative' | 'unknown' {
+  // Reuse gstack's detection: 90-day window, 80% threshold, 7-day cache,
+  // user override via gstack-config. No need to reinvent this.
+  const gstackBin = resolve(homedir(), '.claude/skills/gstack/bin/gstack-repo-mode');
+  if (!existsSync(gstackBin)) return 'unknown';
+
   try {
-    // Use spawnSync with argv array (no shell, no injection risk)
-    const result = spawnSync('git', ['log', '--format=%ae'], {
+    const result = spawnSync(gstackBin, [], {
       encoding: 'utf-8',
       timeout: 2000,
     });
     if (result.status !== 0 || !result.stdout) return 'unknown';
-    const uniqueEmails = new Set(
-      result.stdout.split('\n').map(s => s.trim()).filter(Boolean)
-    );
-    if (uniqueEmails.size === 1) return 'solo';
-    if (uniqueEmails.size >= 2) return 'collaborative';
+    // Output format: "REPO_MODE=solo" or "REPO_MODE=collaborative" etc.
+    const match = result.stdout.match(/REPO_MODE=(solo|collaborative|unknown)/);
+    return match ? (match[1] as 'solo' | 'collaborative' | 'unknown') : 'unknown';
   } catch {}
   return 'unknown';
 }
@@ -285,11 +304,8 @@ async function main() {
 
     if (response.action === 'accept' && state.lastSuggestedSkill) {
       recordFeedback(state.lastSuggestedSkill, 'accept');
-      const prevAccepted = state.suggestionHistory
-        .slice()
-        .reverse()
-        .find((s: string) => s !== state.lastSuggestedSkill);
-      if (prevAccepted) recordSequence(prevAccepted, state.lastSuggestedSkill);
+      // Note: skill sequences are recorded by gstack's timeline hooks,
+      // not by us. We just read from ~/.gstack/projects/{slug}/timeline.jsonl
 
       process.stdout.write(JSON.stringify({
         additionalContext: `💡 User accepted suggestion. Invoke the skill: @${state.lastSuggestedSkill}`,
