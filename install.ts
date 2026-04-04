@@ -110,27 +110,43 @@ async function main() {
   const sessionHookDest = join(HOOKS_DIR, 'skill-discovery-session-start.sh');
   console.log('');
 
-  // 5. Create default config if not exists
+  // 5. Create or migrate config
   console.log('⚙️  Setting up configuration...');
   const configPath = join(CONFIG_DIR, 'skill-router.json');
+  const defaultConfig = {
+    enabled: true,
+    threshold: 80,
+    maxSuggestionsPerSession: 500,
+    cooldownMinutes: 5,
+    disabledSkills: [],
+    priorityBoosts: {},
+    quietHours: { enabled: false, start: "22:00", end: "08:00" },
+    // Defaults for v0.2+ fields (migration-safe)
+    repoModeThresholds: { solo: 60, collaborative: 85, unknown: 80 },
+    showLimitWarnings: true,
+    feedbackBoost: 20,
+    feedbackPenalty: 30,
+  };
+
   if (!existsSync(configPath)) {
-    const defaultConfig = {
-      enabled: true,
-      threshold: 80,
-      maxSuggestionsPerSession: 10,
-      cooldownMinutes: 5,
-      disabledSkills: [],
-      priorityBoosts: {},
-      quietHours: {
-        enabled: false,
-        start: "22:00",
-        end: "08:00"
-      }
-    };
     writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
     console.log(`✅ Created default config: ${configPath}`);
   } else {
-    console.log(`ℹ️  Config already exists: ${configPath}`);
+    // Migration: add any missing fields to existing config
+    const existing = JSON.parse(readFileSync(configPath, 'utf-8'));
+    let migrated = false;
+    for (const [key, value] of Object.entries(defaultConfig)) {
+      if (existing[key] === undefined) {
+        existing[key] = value;
+        migrated = true;
+      }
+    }
+    if (migrated) {
+      writeFileSync(configPath, JSON.stringify(existing, null, 2));
+      console.log(`✅ Migrated config with new fields: ${configPath}`);
+    } else {
+      console.log(`ℹ️  Config already up to date: ${configPath}`);
+    }
   }
   console.log('');
 

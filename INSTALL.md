@@ -59,7 +59,7 @@ Create `~/.claude/config/skill-router.json`:
 {
   "enabled": true,
   "threshold": 80,
-  "maxSuggestionsPerSession": 10,
+  "maxSuggestionsPerSession": 500,
   "cooldownMinutes": 5,
   "disabledSkills": [],
   "priorityBoosts": {},
@@ -155,7 +155,7 @@ bun run skill-router-before-message.ts "I need to review my code"
 |-----|------|---------|-------------|
 | `enabled` | boolean | `true` | Enable/disable all suggestions |
 | `threshold` | number | `80` | Minimum match score to trigger suggestion |
-| `maxSuggestionsPerSession` | number | `10` | Max suggestions per conversation |
+| `maxSuggestionsPerSession` | number | `500` | Safety cap against runaway loops (cooldown is the real throttle) |
 | `cooldownMinutes` | number | `5` | Cooldown between suggestions |
 | `disabledSkills` | string[] | `[]` | Skills to never suggest |
 | `priorityBoosts` | object | `{}` | Skill name -> priority boost (number) |

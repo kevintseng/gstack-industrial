@@ -3,14 +3,22 @@
  * Skill Router - Before Message Hook
  *
  * Analyzes user messages and suggests relevant skills proactively.
+ * All state is local-only (never sent anywhere).
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { homedir } from 'os';
+import { spawnSync } from 'child_process';
 
-// Import router
 const ROUTER_PATH = resolve(homedir(), '.claude/skills/templates/skill-router');
+const STATE_DIR = resolve(homedir(), '.claude/sessions');
+const CONFIG_PATH = resolve(homedir(), '.claude/config/skill-router.json');
+const SESSION_STATE_PATH = resolve(STATE_DIR, 'skill-router-state.json');
+const FEEDBACK_PATH = resolve(STATE_DIR, 'skill-router-feedback.json');
+const SEQUENCES_PATH = resolve(STATE_DIR, 'skill-router-sequences.json');
+
+// ─── Loaders ──────────────────────────────────────────────────────────
 
 async function loadRouter() {
   try {
@@ -35,39 +43,34 @@ async function loadMatchers() {
 }
 
 function loadConfig() {
-  const configPath = resolve(homedir(), '.claude/config/skill-router.json');
-
   try {
-    if (existsSync(configPath)) {
-      const content = readFileSync(configPath, 'utf-8');
-      return JSON.parse(content);
+    if (existsSync(CONFIG_PATH)) {
+      return JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
     }
   } catch (error) {
     console.error('[skill-router] Failed to load config:', error);
   }
 
-  // Default config
   return {
     enabled: true,
     threshold: 80,
-    maxSuggestionsPerSession: 10,
+    maxSuggestionsPerSession: 500,
     cooldownMinutes: 5,
     disabledSkills: [],
     priorityBoosts: {},
+    repoModeThresholds: { solo: 60, collaborative: 85, unknown: 80 },
+    showLimitWarnings: true,
+    feedbackBoost: 20,
+    feedbackPenalty: 30,
   };
 }
 
 function getSessionState() {
-  const sessionPath = resolve(homedir(), '.claude/sessions/skill-router-state.json');
-
   try {
-    if (existsSync(sessionPath)) {
-      const content = readFileSync(sessionPath, 'utf-8');
-      return JSON.parse(content);
+    if (existsSync(SESSION_STATE_PATH)) {
+      return JSON.parse(readFileSync(SESSION_STATE_PATH, 'utf-8'));
     }
-  } catch (error) {
-    // Ignore, return default state
-  }
+  } catch {}
 
   return {
     suggestionsCount: 0,
@@ -79,58 +82,177 @@ function getSessionState() {
 }
 
 function updateSessionState(updates: any) {
-  const sessionPath = resolve(homedir(), '.claude/sessions/skill-router-state.json');
   const state = getSessionState();
-
   const newState = { ...state, ...updates };
-
   try {
-    writeFileSync(sessionPath, JSON.stringify(newState, null, 2));
+    writeFileSync(SESSION_STATE_PATH, JSON.stringify(newState, null, 2));
   } catch (error) {
     console.error('[skill-router] Failed to update session state:', error);
   }
 }
 
+// ─── Feedback Store (local only) ───────────────────────────────────────
+
+interface FeedbackRecord {
+  skill: string;
+  accepted: number;
+  dismissed: number;
+  lastUsedAt: number;
+}
+
+function loadFeedback(): Record<string, FeedbackRecord> {
+  try {
+    if (existsSync(FEEDBACK_PATH)) {
+      return JSON.parse(readFileSync(FEEDBACK_PATH, 'utf-8'));
+    }
+  } catch {}
+  return {};
+}
+
+function saveFeedback(feedback: Record<string, FeedbackRecord>) {
+  try {
+    writeFileSync(FEEDBACK_PATH, JSON.stringify(feedback, null, 2));
+  } catch {}
+}
+
+function recordFeedback(skill: string, action: 'accept' | 'dismiss') {
+  const feedback = loadFeedback();
+  if (!feedback[skill]) {
+    feedback[skill] = { skill, accepted: 0, dismissed: 0, lastUsedAt: 0 };
+  }
+  if (action === 'accept') {
+    feedback[skill].accepted++;
+    feedback[skill].lastUsedAt = Date.now();
+  } else {
+    feedback[skill].dismissed++;
+  }
+  saveFeedback(feedback);
+}
+
+function getFeedbackScore(skill: string): number {
+  const feedback = loadFeedback();
+  const record = feedback[skill];
+  if (!record) return 0;
+
+  const total = record.accepted + record.dismissed;
+  if (total < 3) return 0; // Not enough data
+
+  const acceptRate = record.accepted / total;
+  return (acceptRate - 0.5) * 2; // Range: -1 to +1
+}
+
+// ─── Sequence Learning (pair detection) ───────────────────────────────
+
+interface SequenceRecord {
+  pair: string;
+  count: number;
+  lastSeen: number;
+}
+
+function loadSequences(): Record<string, SequenceRecord> {
+  try {
+    if (existsSync(SEQUENCES_PATH)) {
+      return JSON.parse(readFileSync(SEQUENCES_PATH, 'utf-8'));
+    }
+  } catch {}
+  return {};
+}
+
+function saveSequences(sequences: Record<string, SequenceRecord>) {
+  try {
+    writeFileSync(SEQUENCES_PATH, JSON.stringify(sequences, null, 2));
+  } catch {}
+}
+
+function recordSequence(prev: string | null, current: string) {
+  if (!prev || prev === current) return;
+  const pair = `${prev}->${current}`;
+  const sequences = loadSequences();
+  if (!sequences[pair]) {
+    sequences[pair] = { pair, count: 0, lastSeen: 0 };
+  }
+  sequences[pair].count++;
+  sequences[pair].lastSeen = Date.now();
+  saveSequences(sequences);
+}
+
+function predictNextSkill(lastAccepted: string | null): string | null {
+  if (!lastAccepted) return null;
+  const sequences = loadSequences();
+
+  let bestPair: SequenceRecord | null = null;
+  for (const pair of Object.values(sequences)) {
+    if (pair.pair.startsWith(`${lastAccepted}->`) && pair.count >= 2) {
+      if (!bestPair || pair.count > bestPair.count) {
+        bestPair = pair;
+      }
+    }
+  }
+
+  return bestPair ? bestPair.pair.split('->')[1] : null;
+}
+
+// ─── Repo Mode Detection (safe, no shell) ─────────────────────────────
+
+function detectRepoMode(): 'solo' | 'collaborative' | 'unknown' {
+  try {
+    // Use spawnSync with argv array (no shell, no injection risk)
+    const result = spawnSync('git', ['log', '--format=%ae'], {
+      encoding: 'utf-8',
+      timeout: 2000,
+    });
+    if (result.status !== 0 || !result.stdout) return 'unknown';
+    const uniqueEmails = new Set(
+      result.stdout.split('\n').map(s => s.trim()).filter(Boolean)
+    );
+    if (uniqueEmails.size === 1) return 'solo';
+    if (uniqueEmails.size >= 2) return 'collaborative';
+  } catch {}
+  return 'unknown';
+}
+
+// ─── Guards ────────────────────────────────────────────────────────────
+
+function getEffectiveThreshold(config: any, repoMode: string): number {
+  if (config.repoModeThresholds && config.repoModeThresholds[repoMode] !== undefined) {
+    return config.repoModeThresholds[repoMode];
+  }
+  return config.threshold;
+}
+
 function checkCooldown(state: any, config: any): boolean {
   if (state.lastSuggestionTime === 0) return true;
-
   const now = Date.now();
   const cooldownMs = config.cooldownMinutes * 60 * 1000;
-  const timeSinceLastSuggestion = now - state.lastSuggestionTime;
-
-  return timeSinceLastSuggestion >= cooldownMs;
+  return (now - state.lastSuggestionTime) >= cooldownMs;
 }
 
 function checkMaxSuggestions(state: any, config: any): boolean {
   return state.suggestionsCount < config.maxSuggestionsPerSession;
 }
 
+// ─── User Response Parser ─────────────────────────────────────────────
+
 function parseUserResponse(message: string): {
   isResponse: boolean;
   action: 'accept' | 'decline' | 'stop';
 } {
   const msg = message.trim().toLowerCase();
-
-  // Accept responses
   if (msg.match(/^(yes|y|ok|sure|go|do it|run it)$/)) {
     return { isResponse: true, action: 'accept' };
   }
-
-  // Stop suggesting
   if (msg.match(/stop suggest|no more|disable suggest|turn off|quiet/)) {
     return { isResponse: true, action: 'stop' };
   }
-
-  // Decline
   if (msg.match(/^(no|n|nah|nope|not now|skip|pass)$/)) {
     return { isResponse: true, action: 'decline' };
   }
-
   return { isResponse: false, action: 'decline' };
 }
 
+// ─── Main ──────────────────────────────────────────────────────────────
+
 async function main() {
-  // Read user message from stdin (Claude Code hook protocol)
   let message = '';
   try {
     const raw = await Bun.stdin.text();
@@ -139,38 +261,19 @@ async function main() {
       const data = JSON.parse(trimmed);
       message = data.prompt || data.message || '';
     }
-  } catch {
-    // Ignore stdin parse errors
-  }
+  } catch {}
 
-  // Fallback to argv for CLI testing: bun run hook.ts "message"
-  if (!message) {
-    message = process.argv[2] || '';
-  }
+  if (!message) message = process.argv[2] || '';
+  if (!message) process.exit(0);
 
-  if (!message) {
-    process.exit(0);
-  }
-
-  // Load configuration
   const config = loadConfig();
+  if (!config.enabled) process.exit(0);
 
-  if (!config.enabled) {
-    // Router disabled
-    process.exit(0);
-  }
-
-  // Check session state
   const state = getSessionState();
+  if (state.disabledThisSession) process.exit(0);
 
-  if (state.disabledThisSession) {
-    // User disabled suggestions this session
-    process.exit(0);
-  }
-
-  // Check if this is a response to a previous suggestion
+  // Handle user response to previous suggestion
   const response = parseUserResponse(message);
-
   if (response.isResponse) {
     if (response.action === 'stop') {
       updateSessionState({ disabledThisSession: true });
@@ -181,88 +284,99 @@ async function main() {
     }
 
     if (response.action === 'accept' && state.lastSuggestedSkill) {
-      // User accepted suggestion - signal Claude to invoke skill
+      recordFeedback(state.lastSuggestedSkill, 'accept');
+      const prevAccepted = state.suggestionHistory
+        .slice()
+        .reverse()
+        .find((s: string) => s !== state.lastSuggestedSkill);
+      if (prevAccepted) recordSequence(prevAccepted, state.lastSuggestedSkill);
+
       process.stdout.write(JSON.stringify({
         additionalContext: `💡 User accepted suggestion. Invoke the skill: @${state.lastSuggestedSkill}`,
       }));
       process.exit(0);
     }
 
-    if (response.action === 'decline') {
-      // User declined - continue normally
+    if (response.action === 'decline' && state.lastSuggestedSkill) {
+      recordFeedback(state.lastSuggestedSkill, 'dismiss');
       process.stdout.write(JSON.stringify({}));
       process.exit(0);
     }
   }
 
-  // Check cooldown
-  if (!checkCooldown(state, config)) {
-    // Still in cooldown period
-    process.exit(0);
-  }
+  if (!checkCooldown(state, config)) process.exit(0);
 
-  // Check max suggestions
+  // Item 1: Visible warning when limit reached (no more silent failure)
   if (!checkMaxSuggestions(state, config)) {
-    // Reached max suggestions for this session
+    if (config.showLimitWarnings !== false) {
+      process.stdout.write(JSON.stringify({
+        additionalContext: `⚠️  Skill router: suggestion limit reached (${config.maxSuggestionsPerSession}/session). Restart session or raise \`maxSuggestionsPerSession\` in ~/.claude/config/skill-router.json`,
+      }));
+    }
     process.exit(0);
   }
 
-  // Load router
   const router = await loadRouter();
-  if (!router) {
-    process.exit(0);
-  }
+  if (!router) process.exit(0);
 
-  // Load matchers
   const matchers = await loadMatchers();
-  if (matchers.length === 0) {
-    process.exit(0);
-  }
+  if (matchers.length === 0) process.exit(0);
 
-  // Filter out disabled skills
   const activeMatchers = matchers.filter(
     (m: any) => !config.disabledSkills.includes(m.skill)
   );
 
-  // Apply priority boosts
+  // Apply priority boosts + feedback adjustments (item 2)
+  const feedbackBoost = config.feedbackBoost || 20;
+  const feedbackPenalty = config.feedbackPenalty || 30;
   const boostedMatchers = activeMatchers.map((m: any) => {
+    let priority = m.priority;
     if (config.priorityBoosts[m.skill]) {
-      return {
-        ...m,
-        priority: m.priority - (config.priorityBoosts[m.skill] / 10),
-      };
+      priority -= config.priorityBoosts[m.skill] / 10;
+    }
+    const feedbackScore = getFeedbackScore(m.skill);
+    if (feedbackScore > 0) {
+      priority -= feedbackScore * (feedbackBoost / 10);
+    } else if (feedbackScore < 0) {
+      priority -= feedbackScore * (feedbackPenalty / 10);
+    }
+    return { ...m, priority };
+  });
+
+  // Item 3: Sequence learning — boost predicted next skill
+  const predictedNext = predictNextSkill(state.lastSuggestedSkill);
+  const finalMatchers = boostedMatchers.map((m: any) => {
+    if (m.skill === predictedNext) {
+      return { ...m, priority: m.priority - 3 };
     }
     return m;
   });
 
-  // Route the message
-  const match = router.route(message, boostedMatchers);
+  // Item 4: Repo-mode aware threshold
+  const repoMode = detectRepoMode();
+  const effectiveThreshold = getEffectiveThreshold(config, repoMode);
+  const configWithThreshold = { ...config, threshold: effectiveThreshold };
 
-  if (!match) {
-    // No match found
-    process.exit(0);
-  }
+  const match = router.route(message, finalMatchers, configWithThreshold);
+  if (!match) process.exit(0);
 
-  // Check if same skill was suggested recently
   if (
     state.lastSuggestedSkill === match.skill &&
     state.suggestionHistory.slice(-3).filter((s: string) => s === match.skill).length >= 3
   ) {
-    // Same skill suggested 3 times in a row - skip to avoid spam
     process.exit(0);
   }
 
-  // Output suggestion as Claude Code hook additionalContext JSON
+  const predictionHint = predictedNext === match.skill ? ' (based on your pattern)' : '';
   const suggestion = [
     '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    `💡 Suggestion: Use @${match.skill} for this task`,
+    `💡 Suggestion: Use @${match.skill} for this task${predictionHint}`,
     `   ${match.explanation}`,
     `   (Say "yes" to run, or "stop suggesting" to disable)`,
     '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
   ].join('\n');
   process.stdout.write(JSON.stringify({ additionalContext: suggestion }));
 
-  // Update session state
   updateSessionState({
     suggestionsCount: state.suggestionsCount + 1,
     lastSuggestionTime: Date.now(),

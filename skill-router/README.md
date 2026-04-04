@@ -119,7 +119,7 @@ Create `~/.claude/config/skill-router.json`:
 {
   "enabled": true,
   "threshold": 80,
-  "maxSuggestionsPerSession": 10,
+  "maxSuggestionsPerSession": 500,
   "cooldownMinutes": 5,
   "disabledSkills": [],
   "priorityBoosts": {
@@ -138,7 +138,7 @@ Create `~/.claude/config/skill-router.json`:
 
 - `enabled` — Enable/disable router globally
 - `threshold` — Minimum score to suggest (default: 80)
-- `maxSuggestionsPerSession` — Limit suggestions per session (default: 10)
+- `maxSuggestionsPerSession` — Safety net against runaway loops (default: 500). The real throttle is `cooldownMinutes` — this just prevents unbounded suggestions if cooldown breaks.
 - `cooldownMinutes` — Time between suggestions (default: 5)
 - `disabledSkills` — Skills to never suggest
 - `priorityBoosts` — Boost specific skills' scores
