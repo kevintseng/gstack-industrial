@@ -32,8 +32,8 @@
 - **「yes」→ 完整上下文注入** — 发送结构化的简报给 Claude（角色、上下文快照、执行提示）
 - **从使用中学习** — 提升你接受的 skill，降低你拒绝的 skill 优先级
 - **零垃圾消息** — 5 分钟冷却、500 个 session 上限、同个 skill 不连续建议 3 次
-
-所有状态都是**本地存储**。无 telemetry、无网络调用。
+- **多语言界面** — 建议以你的语言呈现（自动检测系统 locale）
+- **完全本地** — 无 telemetry、无网络调用，所有状态在 `~/.claude/`
 
 ---
 
@@ -62,7 +62,7 @@ git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
 # 2. 自动安装
-bun install
+bun run install
 ```
 
 安装脚本会自动：
@@ -97,7 +97,7 @@ bun install
 
 ```bash
 git pull
-bun install
+bun run install
 ```
 
 安装脚本是幂等的——重新执行会覆盖已安装的文件、合并新的设置字段（保留你的设置），并跳过已存在的 hook 注册。

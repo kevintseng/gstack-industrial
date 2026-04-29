@@ -8,7 +8,7 @@ git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
 # 2. Run installer
-bun install
+bun run install
 # Automatically installs to ~/.claude/
 ```
 
@@ -120,7 +120,7 @@ bun run auto-discover.ts
 git pull
 
 # Re-run installer (idempotent — safe to run multiple times)
-bun install
+bun run install
 ```
 
 The installer handles updates automatically:
@@ -128,7 +128,7 @@ The installer handles updates automatically:
 - **Config**: Adds any new config fields while preserving your existing settings (merge, not overwrite)
 - **Hooks**: Skips hook registration if hooks already exist (no duplicates created)
 
-No manual migration required. After `bun install`, Claude Code picks up changes on the next session.
+No manual migration required. After `bun run install`, Claude Code picks up changes on the next session.
 
 ---
 

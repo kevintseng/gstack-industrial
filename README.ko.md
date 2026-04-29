@@ -32,8 +32,8 @@ Claude Code 스킬을 수백 개 설치했는데 어떤 것을 사용해야 할�
 - **"yes" → 완전한 컨텍스트 주입** — 역할, 컨텍스트 스냅샷, 실행 힌트를 XML로 Claude에 전송
 - **사용에서 학습** — 수락한 스킬 우선, 거부한 스킬 우선순위 낮춤
 - **제로 스팸** — 5분 쿨다운, 세션 상한 500, 같은 스킬 3번 연속 제안 없음
-
-모든 상태는 **로컬에만 저장**됩니다. 텔레메트리 없음, 네트워크 호출 없음.
+- **다국어 UI** — 제안이 내 언어로 표시됨 (시스템 locale 자동 감지)
+- **완전 로컬** — 텔레메트리 없음, 네트워크 호출 없음, 모든 상태는 `~/.claude/`에
 
 ---
 
@@ -62,7 +62,7 @@ git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
 # 2. 자동 설치
-bun install
+bun run install
 ```
 
 설치 스크립트가 자동으로:
@@ -95,7 +95,7 @@ bun install
 
 ```bash
 git pull
-bun install
+bun run install
 ```
 
 ---

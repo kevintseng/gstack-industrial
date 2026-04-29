@@ -32,8 +32,8 @@ Bạn đã cài hàng trăm skill Claude Code nhưng không bao giờ nhớ nên
 - **"yes" → Tiêm ngữ cảnh đầy đủ** — Gửi briefing XML cho Claude (vai trò, snapshot ngữ cảnh, gợi ý)
 - **Học từ sử dụng** — Tăng ưu tiên skill được chấp nhận, giảm skill bị từ chối
 - **Không spam** — Cooldown 5 phút, giới hạn 500/session, cùng skill không đề xuất 3 lần liên tiếp
-
-Tất cả state đều **chỉ lưu cục bộ**. Không telemetry. Không cuộc gọi mạng.
+- **Giao diện đa ngôn ngữ** — Đề xuất hiển thị bằng ngôn ngữ của bạn (tự động phát hiện locale hệ thống)
+- **Hoàn toàn cục bộ** — Không telemetry, không cuộc gọi mạng, tất cả state ở `~/.claude/`
 
 ---
 
@@ -62,14 +62,14 @@ git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
 # 2. Tự động cài
-bun install
+bun run install
 ```
 
 ### Cập nhật
 
 ```bash
 git pull
-bun install
+bun run install
 ```
 
 Installer là idempotent — chạy lại sẽ ghi đè các file đã cài với phiên bản mới nhất, hợp nhất các trường cấu hình mới (giữ nguyên cài đặt của bạn), và bỏ qua hook đã đăng ký.

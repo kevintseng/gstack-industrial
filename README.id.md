@@ -32,8 +32,8 @@ Anda menginstal ratusan skill Claude Code tapi tidak pernah ingat yang mana haru
 - **"yes" → Injeksi Konteks Lengkap** — Mengirim briefing XML ke Claude (peran, snapshot konteks, petunjuk)
 - **Belajar dari Penggunaan** — Meningkatkan prioritas skill yang diterima, mengurangi yang ditolak
 - **Tanpa Spam** — 5 menit cooldown, batas 500/sesi, skill sama tidak disarankan 3x berturut-turut
-
-Semua state **lokal saja**. Tanpa telemetri. Tanpa panggilan jaringan.
+- **UI Multibahasa** — Saran ditampilkan dalam bahasa Anda (deteksi locale sistem otomatis)
+- **Sepenuhnya Lokal** — Tanpa telemetri, tanpa panggilan jaringan, semua state di `~/.claude/`
 
 ---
 
@@ -62,14 +62,14 @@ git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
 # 2. Auto-install
-bun install
+bun run install
 ```
 
 ### Pembaruan
 
 ```bash
 git pull
-bun install
+bun run install
 ```
 
 Installer bersifat idempotent — menjalankan ulang akan menimpa file yang terinstal dengan versi terbaru, menggabungkan field konfigurasi baru (mempertahankan pengaturan Anda), dan melewati hook yang sudah terdaftar.

@@ -2,9 +2,9 @@
 
 # gstack-industrial
 
-**The right Claude Code skill, at the right moment — automatically**
+**The right Claude Code skill, at the right moment — automatically.**
 
-*Enhancement layer on top of [gstack](https://github.com/garrytan/gstack) — not a replacement.*
+*Enhancement layer on top of [gstack](https://github.com/garrytan/gstack). Requires gstack.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/github/v/release/kevintseng/gstack-industrial?style=for-the-badge&color=blue)](https://github.com/kevintseng/gstack-industrial/releases)
@@ -20,20 +20,9 @@
 
 ---
 
-## What is this?
+You have dozens of Claude Code skills. You never remember which one to use.
 
-You have hundreds of Claude Code skills installed but can never remember which one to use?
-
-**gstack-industrial** watches every message you send and — when it sees the right moment — suggests the most relevant skill. Say "yes" and Claude gets a fully-prepared context: who to be, what the project state was when the suggestion was made, and how to execute.
-
-- **Auto-Discovery** — Scans all installed SKILL.md files and builds routing rules automatically
-- **Context-Aware Suggestions** — Matches on your words, git state, development phase, and usage history
-- **Confidence Labels** — `Highly Recommended` / `Suggested` / `May Apply` so you know how strongly to heed it
-- **"Yes" → Full Context Injection** — Sends Claude a structured brief (role, context snapshot, execution hints) via XML
-- **Learns From You** — Boosts skills you accept, penalizes ones you dismiss
-- **Zero Spam** — 5-minute cooldown, 500-suggestion session cap, same skill never suggested 3× in a row
-
-All state is **local-only**. No telemetry. No network calls.
+**gstack-industrial** watches your messages and — when the moment is right — surfaces the most relevant skill. One word and Claude gets a fully-prepared context: its role, your project state, and exactly how to execute.
 
 ---
 
@@ -53,17 +42,18 @@ Claude responds:
 (Say "yes" to run, or "stop suggesting" to disable)
 ```
 
-**Say "yes"** and Claude receives:
+Say **"yes"** and Claude receives a structured brief:
 
 ```xml
 <skill-invocation>
   <skill>brainstorming</skill>
-  <role>You are a structured brainstorming facilitator. Help explore ideas systematically without premature implementation commitments. Present trade-offs and alternatives — do not write code.</role>
+  <role>You are a structured brainstorming facilitator. Help explore ideas
+  systematically without premature implementation commitments.</role>
   <context>
     <branch>feature/auth-redesign</branch>
     <phase>think</phase>
     <git-status>dirty</git-status>
-    <uncommitted-files>src/auth.ts, src/session.ts, tests/auth.test.ts (+2)</uncommitted-files>
+    <uncommitted-files>src/auth.ts, src/session.ts (+2 more)</uncommitted-files>
     <last-commit>47 minutes ago</last-commit>
   </context>
   <execution-hints>
@@ -71,88 +61,128 @@ Claude responds:
     <hint>Generate 3+ diverse alternatives before evaluating any</hint>
     <hint>No commit in 47 min — consider checkpointing</hint>
   </execution-hints>
-  <instruction>Invoke the @brainstorming skill now, using the context above to focus your execution.</instruction>
+  <instruction>Invoke the @brainstorming skill now, using the context above.</instruction>
 </skill-invocation>
 ```
 
-Claude knows what to do — no re-explaining required.
+Claude knows what to do. No re-explaining required.
 
 ---
 
-## Relationship with gstack
+## Features
 
-gstack-industrial is a **layer on top of gstack**, not a replacement. It reuses gstack's infrastructure:
-
-| What gstack provides | What gstack-industrial adds |
-|----------------------|----------------------------|
-| 36+ skills (ship, review, qa, brainstorming, etc.) | **Auto-suggest** any installed skill based on your message |
-| `gstack-repo-mode` binary (solo/collaborative detection) | **Repo-mode aware thresholds** (reads gstack's output) |
-| `timeline.jsonl` (skill completion tracking) | **Pair learning** (reads gstack's timeline to predict next skill) |
-| Manual skill invocation (`/ship`, `/review`, etc.) | **Proactive suggestions** via UserPromptSubmit hook |
-
-**gstack is required** — install gstack first, then gstack-industrial.
+- **Auto-Discovery** — Scans all installed SKILL.md files and builds routing rules automatically
+- **Context-Aware Matching** — Uses your message text, git state, development phase, and usage history
+- **Calibrated Confidence** — `Highly Recommended` / `Suggested` / `May Apply` labels let you decide how much to heed it
+- **Full Context Injection** — Sends Claude a structured XML brief (role + project snapshot + execution hints) on "yes"
+- **Learns from You** — Boosts skills you accept, penalizes ones you dismiss
+- **Zero Spam** — 5-minute cooldown, 500-suggestion session cap, same skill never suggested 3× in a row
+- **Locale-Aware** — Suggestions appear in your language (EN, zh-TW, zh-CN, ja, ko, pt-BR, id, vi)
+- **Local-Only** — No telemetry, no network calls, all state in `~/.claude/`
 
 ---
 
-## Quick Start
+## Prerequisites
 
-### Installation (2 minutes)
+**gstack is required.** Install it first:
+
+```bash
+# Install gstack (if you haven't already)
+cd ~/.claude/skills
+git clone https://github.com/garrytan/gstack.git
+cd gstack && ./setup
+```
+
+You also need [Bun](https://bun.sh) >= 1.0.0:
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+---
+
+## Installation (2 minutes)
 
 ```bash
 # 1. Clone
 git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
-# 2. Auto-install
-bun install
+# 2. Install
+bun run install
 ```
 
-The installer automatically:
+That's it. The installer:
+
 - Copies skill-router to `~/.claude/skills/templates/skill-router/`
 - Copies hooks to `~/.claude/hooks/`
-- Scans all installed skills and builds routing rules
-- Registers UserPromptSubmit hook (auto-suggest)
-- Registers SessionStart hook (auto-discovery)
-- Creates default config
+- Scans your installed skills and builds routing rules
+- Registers `UserPromptSubmit` hook (auto-suggest on every message)
+- Registers `SessionStart` hook (refresh routing rules on each session)
+- Creates default config at `~/.claude/config/skill-router.json`
 
-Installation is idempotent — running it again won't create duplicate hooks.
+**Idempotent** — safe to run multiple times.
 
 ### Update
 
 ```bash
 git pull
-bun install
+bun run install
 ```
 
-The installer is idempotent — re-running it overwrites installed files with the latest version, migrates any new config fields (preserving your settings), and skips hook registration if hooks already exist.
+The installer overwrites files with the latest version and migrates new config fields while preserving your existing settings.
 
-### Usage
+---
 
-**Auto mode** (recommended): Do nothing, Claude will auto-suggest at the right time.
+## How does it know what to suggest?
 
-**Manual testing**:
+The router analyzes six signals every time you send a message:
 
-```bash
-cd ~/.claude/skills/templates/skill-router
-bun run test-cli.ts "I need to review my code" --debug
+| Signal | Example |
+|--------|---------|
+| **Your words** | "brainstorm" → suggests `/brainstorming` |
+| **Git state** | 7 uncommitted files → suggests code review |
+| **Development phase** | "ready to merge" → suggests `/ship` |
+| **Repo mode** | Solo project = lower threshold (60); team = higher (85) |
+| **Your history** | Accept `/qa` often → its score rises over time |
+| **Skill sequences** | After `/ship`, predicts you may want `/document-release` next |
+
+**Scoring at a glance:**
+
+```
+Keywords match    +50 per keyword
+Regex match       +75
+Phase match       +100
+Git status        +30
+File pattern      +40 per match
+Feedback history  ±custom
+─────────────────────────────────
+Threshold to show: 80 (configurable)
 ```
 
 ---
 
-## Auto-Discovery (v1.1.0)
+## Relationship with gstack
 
-On every Claude Code session start, auto-discover scans all SKILL.md files under `~/.claude/skills/`:
+gstack-industrial is a **layer on top of gstack**, not a replacement:
 
-1. **Parse frontmatter** — Reads `name` and `description` fields
-2. **Extract keywords** — Pulls trigger words from descriptions (quoted phrases, slash commands, key terms)
+| gstack provides | gstack-industrial adds |
+|-----------------|------------------------|
+| 36+ skills (`/ship`, `/review`, `/qa`, …) | **Auto-suggest** any skill at the right moment |
+| `gstack-repo-mode` (solo/collaborative detection) | **Repo-mode aware thresholds** |
+| `timeline.jsonl` (skill completion tracking) | **Sequence prediction** (reads gstack's timeline) |
+| Manual skill invocation | **Proactive suggestions** via UserPromptSubmit hook |
+
+---
+
+## Auto-Discovery
+
+On every session start, auto-discover scans all SKILL.md files under `~/.claude/skills/`:
+
+1. **Parse frontmatter** — Reads `name` and `description`
+2. **Extract keywords** — Pulls trigger words from descriptions
 3. **Infer phase** — Determines applicable development phase (think/plan/build/review/test/ship)
-4. **Merge into matchers.json** — New skills are added automatically; manually-written rules are never overwritten
-
-**Features:**
-- Deduplication: when the same skill exists in multiple sources, priority is gstack > plugin > standalone
-- Idempotent: running repeatedly won't create duplicate entries
-- Manual rule protection: `autoDiscovered: true` flag distinguishes auto vs manual rules
-- 1-hour cooldown: avoids re-scanning on every session resume
+4. **Merge into routing rules** — New skills are added; your hand-written rules are never overwritten
 
 **Manual trigger:**
 
@@ -166,111 +196,60 @@ bun run discover:dry
 
 ---
 
-## How does it know what to suggest?
+## Configuration (Optional)
 
-**Smart Router analyzes:**
+Works out of the box. Edit `~/.claude/config/skill-router.json` to customize:
 
-1. **Your words** — "brainstorm" -> suggests brainstorming skill
-2. **Project state** — Uncommitted files -> suggests code review
-3. **Development phase** — "ready to merge" -> suggests finishing-branch skill
-4. **Repo mode** — Lower threshold for solo devs (60), higher for collaborative (85)
-5. **Your history** — Boosts skills you often accept, penalizes ones you dismiss
-6. **Skill patterns** — Predicts next skill based on your past sequences (via gstack timeline)
+**Disable specific skills:**
+```json
+{ "disabledSkills": ["skill-judge"] }
+```
 
-**Scoring model:**
-- Keywords: +50 per keyword match
-- Regex match: +75
-- Phase match: +100
-- Git status: +30
-- File pattern: +40 per match
-- Feedback boost/penalty: from usage history
-
-**Anti-spam mechanisms:**
-- Cooldown: no repeat suggestions within 5 minutes
-- Session cap: 500 suggestions max per session (visible warning when hit, not silent)
-- Same skill won't be suggested 3 times in a row
-- Feedback-based: skills you dismiss get lower priority over time
-
----
-
-## Advanced Configuration (Optional)
-
-Works out of the box, but you can customize:
-
-**Disable suggestions for certain skills:**
-Edit `~/.claude/config/skill-router.json`:
+**Quiet hours (no suggestions at night):**
 ```json
 {
-  "disabledSkills": ["skill-judge"]
+  "quietHours": { "enabled": true, "start": "22:00", "end": "08:00" }
 }
 ```
 
-**Set quiet hours (no interruptions at night):**
+**Boost or penalize specific skills:**
 ```json
 {
-  "quietHours": {
-    "enabled": true,
-    "start": "22:00",
-    "end": "08:00"
-  }
+  "priorityBoosts": { "brainstorming": 20, "systematic-debugging": 15 }
 }
 ```
 
-**Boost priority for specific skills:**
+**Language override** (auto-detected from system locale by default):
 ```json
-{
-  "priorityBoosts": {
-    "brainstorming": 20,
-    "systematic-debugging": 15
-  }
-}
+{ "lang": "zh-TW" }
 ```
+
+Supported: `en`, `zh-TW`, `zh-CN`, `ja`, `ko`, `pt-BR`, `id`, `vi`
 
 **Tune repo-mode thresholds:**
 ```json
 {
-  "repoModeThresholds": {
-    "solo": 60,
-    "collaborative": 85,
-    "unknown": 80
-  }
+  "repoModeThresholds": { "solo": 60, "collaborative": 85, "unknown": 80 }
 }
 ```
 
-**Tune feedback sensitivity:**
-```json
-{
-  "feedbackBoost": 20,
-  "feedbackPenalty": 30,
-  "showLimitWarnings": true
-}
-```
-
-Details: [INSTALL.md](INSTALL.md)
+Full reference: [INSTALL.md](INSTALL.md)
 
 ---
 
-## File Structure
+## Testing
 
-```
-gstack-industrial/
-├── skill-router/
-│   ├── auto-discover.ts          # Scans SKILL.md -> matchers.json
-│   ├── matchers.json             # Routing rules (manual + auto)
-│   ├── matcher-engine.ts         # Scoring engine
-│   ├── context-extractor.ts      # Context extraction
-│   ├── types.ts                  # Type definitions
-│   ├── index.ts                  # Router entry point
-│   ├── gen-skill-docs.ts         # Template generator
-│   ├── suggestion-formatter.ts   # Suggestion formatter + XML injection
-│   └── test-cli.ts               # CLI test tool
-├── hooks/
-│   ├── skill-router-before-message.ts    # UserPromptSubmit hook
-│   └── skill-discovery-session-start.sh  # SessionStart hook
-├── standard-sections/            # Shared template sections
-├── install.ts                    # Install script
-├── package.json
-└── README.md
+```bash
+cd ~/.claude/skills/templates/skill-router
+
+# Basic test
+bun run test-cli.ts "I need to review my code"
+
+# With debug context
+bun run test-cli.ts "All tests pass, ready to merge" --debug
+
+# See multiple suggestions
+bun run test-cli.ts "The test is failing" --multi
 ```
 
 ---
@@ -278,42 +257,32 @@ gstack-industrial/
 ## Uninstall
 
 ```bash
-# Remove installed files
 rm -rf ~/.claude/skills/templates/skill-router
 rm ~/.claude/skills/templates/*-section.md
 rm ~/.claude/hooks/skill-router-before-message.ts
 rm ~/.claude/hooks/skill-discovery-session-start.sh
 rm ~/.claude/config/skill-router.json
 rm ~/.claude/sessions/skill-router-state.json
-rm ~/.claude/sessions/skill-router-feedback.json
 rm ~/.claude/state/skill-discovery-last-run
-
-# Manually edit ~/.claude/settings.json to remove related hooks
+# Then edit ~/.claude/settings.json to remove the two hook entries
 ```
 
 ---
 
 ## Contributing
 
-PRs welcome! Process:
-
-1. Fork this repo
-2. Create a feature branch
-3. Test your changes
-4. Submit PR
-
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## License
 
-MIT License - see [LICENSE](LICENSE)
+MIT — see [LICENSE](LICENSE)
 
 ---
 
 ## Acknowledgments
 
-- **[Garry Tan](https://github.com/garrytan)** — Original gstack philosophy
+- **[Garry Tan](https://github.com/garrytan)** — gstack philosophy and original infrastructure
 - **[Claude Code](https://claude.ai/code)** — Integration platform
-- **[Anthropic Prompt Engineering](https://www.anthropic.com)** — 6-element framework that powers suggestion quality
+- **[Anthropic](https://www.anthropic.com)** — 6-element prompt engineering framework that powers suggestion quality

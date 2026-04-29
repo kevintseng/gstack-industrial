@@ -32,8 +32,8 @@ Você instalou centenas de skills do Claude Code mas nunca lembra qual usar?
 - **"yes" → Injeção de Contexto Completo** — Envia ao Claude um briefing XML (papel, snapshot de contexto, dicas)
 - **Aprende com Você** — Aumenta prioridade de skills aceitas, reduz das recusadas
 - **Zero Spam** — 5 min cooldown, cap de 500 por sessão, mesma skill não sugerida 3x seguidas
-
-Todo estado é **apenas local**. Sem telemetria. Sem chamadas de rede.
+- **UI Multilíngue** — Sugestões no seu idioma (detecta locale do sistema automaticamente)
+- **Totalmente Local** — Sem telemetria, sem chamadas de rede, todo estado em `~/.claude/`
 
 ---
 
@@ -62,14 +62,14 @@ git clone https://github.com/kevintseng/gstack-industrial.git
 cd gstack-industrial
 
 # 2. Auto-instalar
-bun install
+bun run install
 ```
 
 ### Atualização
 
 ```bash
 git pull
-bun install
+bun run install
 ```
 
 O instalador é idempotente — re-executar sobrescreve os arquivos instalados com a versão mais recente, mescla novos campos de configuração (preservando suas configurações) e pula hooks já registrados.
