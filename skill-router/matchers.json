@@ -424,6 +424,180 @@
         }
       },
       "explanation": "Perform code reviews following best practices"
+    },
+    {
+      "skill": "scrape",
+      "priority": 4,
+      "triggers": {
+        "keywords": [
+          "scrape",
+          "get data from",
+          "pull from",
+          "extract from",
+          "scrape this page",
+          "what is on"
+        ],
+        "phase": [
+          "build",
+          "test"
+        ]
+      },
+      "explanation": "Pull structured data from a web page via browser automation",
+      "executionHints": [
+        "First call prototypes; subsequent calls with matching intent run in ~200ms",
+        "Read-only \u2014 for form fills and clicks, use /automate"
+      ],
+      "roleContext": "You are a web scraping specialist. Drive the browser to extract structured data, return JSON, and suggest /skillify to codify the flow for future reuse."
+    },
+    {
+      "skill": "skillify",
+      "priority": 5,
+      "triggers": {
+        "keywords": [
+          "skillify",
+          "codify this",
+          "save this scrape",
+          "make this permanent",
+          "codify the scrape"
+        ],
+        "phase": [
+          "build",
+          "ship"
+        ]
+      },
+      "explanation": "Codify the most recent successful /scrape flow into a permanent browser-skill (~200ms on reuse)",
+      "executionHints": [
+        "Walks back through conversation to find the last /scrape result",
+        "Synthesizes script.ts + test + fixture, runs test in temp dir, asks before committing"
+      ]
+    },
+    {
+      "skill": "landing-report",
+      "priority": 4,
+      "triggers": {
+        "keywords": [
+          "landing report",
+          "version queue",
+          "ship queue",
+          "what version comes next",
+          "which version do i claim"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Show which VERSION slots are claimed by open PRs and what /ship would pick next",
+      "executionHints": [
+        "Read-only snapshot, no mutations",
+        "Run before /ship to avoid VERSION conflicts in collaborative repos"
+      ]
+    },
+    {
+      "skill": "learn",
+      "priority": 5,
+      "triggers": {
+        "keywords": [
+          "show learnings",
+          "what have we learned",
+          "manage learnings",
+          "past patterns",
+          "project learnings",
+          "prune learnings"
+        ],
+        "phase": [
+          "think",
+          "review"
+        ],
+        "regex": "learnings?|what.*learned|past patterns|prune.*learn"
+      },
+      "explanation": "Review, search, prune, and export what gstack has learned across sessions",
+      "executionHints": [
+        "Proactively suggest when user asks about past patterns or wonders if something was fixed before"
+      ]
+    },
+    {
+      "skill": "canary",
+      "priority": 4,
+      "triggers": {
+        "keywords": [
+          "canary",
+          "monitor prod",
+          "post-deploy checks",
+          "watch the release",
+          "verify deploy",
+          "after shipping"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Monitor production after shipping with post-deploy health checks",
+      "executionHints": [
+        "Run after /ship or /land-and-deploy to verify the deployment is healthy"
+      ]
+    },
+    {
+      "skill": "land-and-deploy",
+      "priority": 3,
+      "triggers": {
+        "keywords": [
+          "land and deploy",
+          "merge and deploy",
+          "ship and verify",
+          "merge then deploy"
+        ],
+        "phase": [
+          "ship"
+        ]
+      },
+      "explanation": "Merge + deploy + verify as one atomic supervised flow",
+      "executionHints": [
+        "Combines /ship + deployment + /canary in a single flow"
+      ]
+    },
+    {
+      "skill": "health",
+      "priority": 4,
+      "triggers": {
+        "keywords": [
+          "health check",
+          "codebase health",
+          "code quality dashboard",
+          "technical health",
+          "code health"
+        ],
+        "phase": [
+          "review",
+          "think"
+        ]
+      },
+      "explanation": "Run a code quality and health check dashboard on the codebase",
+      "executionHints": [
+        "Good starting point before a refactor or when onboarding to an unfamiliar codebase"
+      ]
+    },
+    {
+      "skill": "plan-tune",
+      "priority": 5,
+      "triggers": {
+        "keywords": [
+          "tune questions",
+          "stop asking me",
+          "question sensitivity",
+          "fewer questions",
+          "adjust question frequency",
+          "plan tune"
+        ],
+        "phase": [
+          "build",
+          "plan"
+        ],
+        "regex": "stop asking|tune.*question|fewer question|question.*frequen|plan.tune"
+      },
+      "explanation": "Tune how often and which questions gstack asks during planning workflows",
+      "executionHints": [
+        "Use when gstack asks too many or too few questions during plan reviews"
+      ]
     }
   ]
 }

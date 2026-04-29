@@ -63,7 +63,9 @@ const STOP_WORDS = new Set([
 interface SkillMeta {
   name: string;
   description: string;
-  source: string; // e.g., "gstack", "superpowers", "standalone"
+  triggers?: string[];   // Explicit triggers from SKILL.md frontmatter (preferred over extracted keywords)
+  preambleTier?: number; // preamble-tier: 1 = core skill, 2 = extended
+  source: string;        // e.g., "gstack", "superpowers", "standalone"
   path: string;
 }
 
@@ -87,31 +89,50 @@ interface MatcherRegistry {
 // ============================================================================
 
 /**
- * Parse YAML-like frontmatter from SKILL.md
- * Handles both single-line and multi-line (|) description values.
+ * Parse YAML-like frontmatter from SKILL.md.
+ * Handles: single-line values, multi-line (| or >), and list values (- item).
+ * Returns string for scalar values, string[] for list values.
  */
-function parseFrontmatter(content: string): Record<string, string> {
+function parseFrontmatter(content: string): Record<string, string | string[]> {
   const match = content.match(/^---\s*\n([\s\S]*?)\n---/);
   if (!match) return {};
 
   const yaml = match[1];
-  const result: Record<string, string> = {};
+  const result: Record<string, string | string[]> = {};
   const lines = yaml.split('\n');
 
   let currentKey = '';
   let multilineValue = '';
   let inMultiline = false;
+  let inList = false;
+  let listItems: string[] = [];
+
+  const finalizeList = () => {
+    if (inList && currentKey && listItems.length > 0) {
+      result[currentKey] = listItems;
+    }
+    inList = false;
+    listItems = [];
+  };
 
   for (const line of lines) {
     if (inMultiline) {
-      // Multi-line value continues if indented
       if (line.match(/^\s{2,}/) || line.trim() === '') {
         multilineValue += ' ' + line.trim();
         continue;
       } else {
-        // End of multi-line
         result[currentKey] = multilineValue.trim();
         inMultiline = false;
+      }
+    }
+
+    if (inList) {
+      const listItem = line.match(/^\s{2,}-\s+(.*)/);
+      if (listItem) {
+        listItems.push(listItem[1].trim().replace(/^["']|["']$/g, ''));
+        continue;
+      } else {
+        finalizeList();
       }
     }
 
@@ -121,19 +142,21 @@ function parseFrontmatter(content: string): Record<string, string> {
       const value = kvMatch[2].trim();
 
       if (value === '|' || value === '>') {
-        // Start multi-line
         inMultiline = true;
         multilineValue = '';
+      } else if (value === '') {
+        // Empty value — may be followed by a list
+        inList = true;
+        listItems = [];
       } else {
         result[currentKey] = value.replace(/^["']|["']$/g, '');
       }
     }
   }
 
-  // Handle trailing multi-line
-  if (inMultiline && currentKey) {
-    result[currentKey] = multilineValue.trim();
-  }
+  // Finalize trailing blocks
+  if (inMultiline && currentKey) result[currentKey] = multilineValue.trim();
+  finalizeList();
 
   return result;
 }
@@ -238,7 +261,11 @@ function discoverAllSkills(): SkillMeta[] {
 
       byName.set(name, {
         name,
-        description: fm.description,
+        description: fm.description as string,
+        triggers: Array.isArray(fm.triggers) ? fm.triggers as string[] : undefined,
+        preambleTier: typeof fm['preamble-tier'] === 'string'
+          ? parseInt(fm['preamble-tier'] as string, 10)
+          : undefined,
         source,
         path: filePath,
       });
@@ -344,10 +371,19 @@ function inferPhases(description: string): string[] {
 
 /**
  * Generate a matcher entry from skill metadata.
+ * Prefers explicit `triggers:` from SKILL.md frontmatter over heuristic extraction.
+ * preamble-tier: 1 skills get +1 priority (lower number = higher priority).
  */
 function generateMatcher(skill: SkillMeta, priority: number): MatcherEntry {
-  const keywords = extractKeywords(skill.description, skill.name);
+  // Explicit frontmatter triggers are precise; fall back to heuristic extraction
+  const keywords = skill.triggers?.length
+    ? skill.triggers
+    : extractKeywords(skill.description, skill.name);
+
   const phases = inferPhases(skill.description);
+
+  // tier-1 skills are core/fundamental — give them slightly higher priority
+  const effectivePriority = skill.preambleTier === 1 ? Math.max(1, priority - 1) : priority;
 
   // Build explanation from first sentence of description
   const firstSentence = skill.description
@@ -358,7 +394,7 @@ function generateMatcher(skill: SkillMeta, priority: number): MatcherEntry {
 
   return {
     skill: skill.name,
-    priority,
+    priority: effectivePriority,
     triggers: {
       keywords,
       phase: phases,
