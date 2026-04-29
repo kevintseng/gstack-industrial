@@ -181,11 +181,21 @@ function getMatchedTriggers(
   }
 
   if (triggers.uncommittedFiles) {
-    matched.push(`uncommitted: ${ctx.uncommittedFiles.length}`);
+    const { min, max } = triggers.uncommittedFiles;
+    const count = ctx.uncommittedFiles.length;
+    if ((min === undefined || count >= min) && (max === undefined || count <= max)) {
+      matched.push(`uncommitted: ${count}`);
+    }
   }
 
   if (triggers.branch) {
-    matched.push(`branch: ${ctx.currentBranch}`);
+    const branchMatches =
+      triggers.branch.is?.includes(ctx.currentBranch) ||
+      (triggers.branch.not && !triggers.branch.not.includes(ctx.currentBranch)) ||
+      (triggers.branch.matches && new RegExp(triggers.branch.matches).test(ctx.currentBranch));
+    if (branchMatches) {
+      matched.push(`branch: ${ctx.currentBranch}`);
+    }
   }
 
   return matched;
@@ -210,6 +220,8 @@ export function matchSkills(
         priority: matcher.priority,
         explanation: matcher.explanation,
         matchedTriggers: getMatchedTriggers(matcher, ctx),
+        executionHints: matcher.executionHints,
+        roleContext: matcher.roleContext,
       });
     }
   }

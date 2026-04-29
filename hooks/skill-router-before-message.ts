@@ -11,6 +11,20 @@ import { resolve } from 'path';
 import { homedir } from 'os';
 import { spawnSync } from 'child_process';
 
+// Defined inline to avoid path-resolution issues when the hook is deployed
+// to ~/.claude/hooks/ — Bun erases import type at runtime but relative
+// paths still confuse static tools and future maintainers.
+interface SavedContext {
+  branch: string;
+  phase: string;
+  gitStatus: string;
+  uncommittedFiles: string[];
+  stagedFiles: string[];
+  timeSinceLastCommit?: number;
+  recentCommits: number;
+  savedAt: number;
+}
+
 const ROUTER_PATH = resolve(homedir(), '.claude/skills/templates/skill-router');
 const STATE_DIR = resolve(homedir(), '.claude/sessions');
 const CONFIG_PATH = resolve(homedir(), '.claude/config/skill-router.json');
@@ -75,6 +89,8 @@ function getSessionState() {
     suggestionsCount: 0,
     lastSuggestionTime: 0,
     lastSuggestedSkill: null,
+    lastSuggestedContext: null as SavedContext | null,
+    lastSuggestedMeta: null as { executionHints?: string[]; roleContext?: string } | null,
     disabledThisSession: false,
     suggestionHistory: [],
   };
@@ -304,12 +320,27 @@ async function main() {
 
     if (response.action === 'accept' && state.lastSuggestedSkill) {
       recordFeedback(state.lastSuggestedSkill, 'accept');
-      // Note: skill sequences are recorded by gstack's timeline hooks,
-      // not by us. We just read from ~/.gstack/projects/{slug}/timeline.jsonl
 
-      process.stdout.write(JSON.stringify({
-        additionalContext: `💡 User accepted suggestion. Invoke the skill: @${state.lastSuggestedSkill}`,
-      }));
+      // Elements 1 + 3: inject role definition + saved context as structured XML
+      let additionalContext = `💡 User accepted suggestion. Invoke the skill: @${state.lastSuggestedSkill}`;
+      if (state.lastSuggestedContext) {
+        try {
+          const { formatSkillInvocationContext } = await import(
+            resolve(ROUTER_PATH, 'suggestion-formatter.ts')
+          );
+          const meta = state.lastSuggestedMeta || {};
+          additionalContext = formatSkillInvocationContext(
+            state.lastSuggestedSkill,
+            state.lastSuggestedContext as SavedContext,
+            meta.roleContext,
+            meta.executionHints,
+          );
+        } catch {
+          // Fall back to plain text if formatter unavailable
+        }
+      }
+
+      process.stdout.write(JSON.stringify({ additionalContext }));
       process.exit(0);
     }
 
@@ -383,20 +414,58 @@ async function main() {
     process.exit(0);
   }
 
-  const predictionHint = predictedNext === match.skill ? ' (based on your pattern)' : '';
-  const suggestion = [
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    `💡 Suggestion: Use @${match.skill} for this task${predictionHint}`,
-    `   ${match.explanation}`,
-    `   (Say "yes" to run, or "stop suggesting" to disable)`,
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-  ].join('\n');
+  // Capture context once — used for display AND for the saved snapshot (Element 3)
+  const ctx = router.getContext(message);
+
+  // Build the formatted suggestion using the formatter (Elements 2, 4, 5, 6)
+  let suggestion: string;
+  // Capture full hints (static + dynamic) for saving to session state.
+  // Only static match.executionHints would lose runtime-generated hints on accept.
+  let fullHints: string[] = match.executionHints ?? [];
+  try {
+    const { formatSuggestion, generateContextualExecutionHints } = await import(
+      resolve(ROUTER_PATH, 'suggestion-formatter.ts')
+    );
+    const predictionHint = predictedNext === match.skill ? ' (based on your pattern)' : '';
+    const enhancedMatch = predictionHint
+      ? { ...match, explanation: match.explanation + predictionHint }
+      : match;
+    fullHints = generateContextualExecutionHints(enhancedMatch, ctx);
+    suggestion = formatSuggestion(enhancedMatch, ctx);
+  } catch {
+    const predictionHint = predictedNext === match.skill ? ' (based on your pattern)' : '';
+    suggestion = [
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+      `💡 Suggestion: Use @${match.skill} for this task${predictionHint}`,
+      `   ${match.explanation}`,
+      `   (Say "yes" to run, or "stop suggesting" to disable)`,
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    ].join('\n');
+  }
+
   process.stdout.write(JSON.stringify({ additionalContext: suggestion }));
+
+  // Element 3: save context snapshot so it can be injected when "yes" is received
+  const savedContext: SavedContext = {
+    branch: ctx.currentBranch,
+    phase: ctx.currentPhase,
+    gitStatus: ctx.gitStatus,
+    uncommittedFiles: ctx.uncommittedFiles,
+    stagedFiles: ctx.stagedFiles,
+    timeSinceLastCommit: ctx.timeSinceLastCommit,
+    recentCommits: ctx.recentCommits,
+    savedAt: Date.now(),
+  };
 
   updateSessionState({
     suggestionsCount: state.suggestionsCount + 1,
     lastSuggestionTime: Date.now(),
     lastSuggestedSkill: match.skill,
+    lastSuggestedContext: savedContext,
+    lastSuggestedMeta: {
+      executionHints: fullHints,
+      roleContext: match.roleContext,
+    },
     suggestionHistory: [...state.suggestionHistory, match.skill].slice(-10),
   });
 
