@@ -240,7 +240,7 @@ function discoverAllSkills(): SkillMeta[] {
       const content = readFileSync(filePath, 'utf-8');
       const fm = parseFrontmatter(content);
 
-      if (!fm.description) continue; // Skip skills without description
+      if (typeof fm.description !== 'string' || !fm.description) continue;
 
       const name = deriveSkillName(filePath, fm);
       const source = inferSource(filePath);
@@ -264,7 +264,7 @@ function discoverAllSkills(): SkillMeta[] {
         description: fm.description as string,
         triggers: Array.isArray(fm.triggers) ? fm.triggers as string[] : undefined,
         preambleTier: typeof fm['preamble-tier'] === 'string'
-          ? parseInt(fm['preamble-tier'] as string, 10)
+          ? (parseInt(fm['preamble-tier'] as string, 10) || undefined)
           : undefined,
         source,
         path: filePath,
