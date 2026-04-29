@@ -30,6 +30,12 @@ const LOCALES: Record<string, LocaleStrings> = {
   'vi':    { highlyRecommended: 'Đề xuất mạnh',       suggested: 'Đề xuất',           mayApply: 'Có thể áp dụng',    skillTemplate: 'Dùng @{skill}',        triggeredBy: 'Kích hoạt bởi:', hint: 'Gợi ý:'    },
 };
 
+/**
+ * All supported locale tags — single source of truth derived from LOCALES.
+ * Import this instead of hardcoding the list elsewhere (e.g. context-extractor.ts).
+ */
+export const SUPPORTED_LOCALES: readonly string[] = Object.keys(LOCALES);
+
 function getStrings(lang: string): LocaleStrings {
   return LOCALES[lang] ?? LOCALES['en'];
 }
@@ -174,7 +180,9 @@ export function formatMultipleSuggestions(
 }
 
 /**
- * Format context summary for debugging
+ * Format context summary for debugging.
+ * Debug-only output — intentionally English. Only shown with the --debug flag
+ * in test-cli.ts and never surfaced to end users, so no i18n required.
  */
 export function formatContextSummary(ctx: RouterContext): string {
   const lines: string[] = [];

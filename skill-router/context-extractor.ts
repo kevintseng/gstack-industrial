@@ -13,6 +13,7 @@ import { readFileSync, existsSync } from 'fs';
 import { homedir } from 'os';
 import { resolve } from 'path';
 import { RouterContext, Phase, GitStatus } from './types';
+import { SUPPORTED_LOCALES } from './suggestion-formatter';
 
 /**
  * Execute safe git command (no user input)
@@ -190,7 +191,7 @@ function isWorkingHours(): boolean {
  * Supported BCP 47 tags: en, zh-TW, zh-CN, ja, ko, pt-BR, id, vi
  */
 function detectLocale(): string {
-  const supported = ['en', 'zh-TW', 'zh-CN', 'ja', 'ko', 'pt-BR', 'id', 'vi'];
+  const supported = SUPPORTED_LOCALES;
 
   try {
     const configPath = resolve(homedir(), '.claude/config/skill-router.json');
