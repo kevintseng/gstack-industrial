@@ -2,7 +2,7 @@
 
 # gstack-industrial
 
-**Saran otomatis skill Claude Code yang tepat untuk tugas Anda**
+**Skill Claude Code yang tepat, di saat yang tepat — otomatis**
 
 *Lapisan peningkatan di atas [gstack](https://github.com/garrytan/gstack) — bukan pengganti*
 
@@ -24,14 +24,14 @@
 
 Anda menginstal ratusan skill Claude Code tapi tidak pernah ingat yang mana harus digunakan?
 
-**gstack-industrial** menyelesaikan ini:
+**gstack-industrial** memantau setiap pesan yang Anda kirim dan — di saat yang tepat — menyarankan skill paling relevan. Ucapkan "yes" dan Claude menerima briefing lengkap: peran yang harus diemban, status proyek saat saran dibuat, dan petunjuk eksekusi.
 
 - **Penemuan Otomatis** — Memindai semua SKILL.md terinstal dan membangun aturan routing secara otomatis
-- **Saran Otomatis** — Merekomendasikan skill terbaik berdasarkan pesan dan status proyek Anda
-- **Feedback penggunaan** — Belajar dari yang Anda terima/tolak, sesuaikan prioritas
-- **Pembelajaran pasangan** — Membaca timeline gstack, memprediksi skill berikutnya
-- **Sadar mode repo** — Ambang lebih rendah untuk dev solo, lebih tinggi untuk kolaboratif (via gstack)
-- **Tanpa Gangguan** — Hanya menyarankan saat benar-benar berguna, tidak spam
+- **Saran Berbasis Konteks** — Pencocokan berdasarkan kata-kata, git, fase pengembangan, dan riwayat
+- **Label Kepercayaan** — `強烈建議` / `建議` / `可能適用` untuk mengetahui kekuatan saran
+- **"yes" → Injeksi Konteks Lengkap** — Mengirim briefing XML ke Claude (peran, snapshot konteks, petunjuk)
+- **Belajar dari Penggunaan** — Meningkatkan prioritas skill yang diterima, mengurangi yang ditolak
+- **Tanpa Spam** — 5 menit cooldown, batas 500/sesi, skill sama tidak disarankan 3x berturut-turut
 
 Semua state **lokal saja**. Tanpa telemetri. Tanpa panggilan jaringan.
 
@@ -64,6 +64,15 @@ cd gstack-industrial
 # 2. Auto-install
 bun install
 ```
+
+### Pembaruan
+
+```bash
+git pull
+bun install
+```
+
+Installer bersifat idempotent — menjalankan ulang akan menimpa file yang terinstal dengan versi terbaru, menggabungkan field konfigurasi baru (mempertahankan pengaturan Anda), dan melewati hook yang sudah terdaftar.
 
 ---
 

@@ -15,7 +15,13 @@
           "think"
         ]
       },
-      "explanation": "Brainstorm ideas with structured thinking"
+      "explanation": "Brainstorm ideas with structured thinking",
+      "executionHints": [
+        "Explore the problem space before proposing solutions",
+        "Generate 3+ diverse alternatives before evaluating any",
+        "Avoid committing to implementation details in this phase"
+      ],
+      "roleContext": "You are a structured brainstorming facilitator. Help explore ideas systematically without premature implementation commitments. Present trade-offs and alternatives — do not write code."
     },
     {
       "skill": "writing-plans",
@@ -35,7 +41,13 @@
           "clean"
         ]
       },
-      "explanation": "Create step-by-step implementation plan"
+      "explanation": "Create step-by-step implementation plan",
+      "executionHints": [
+        "Break work into milestones of 1-3 days each",
+        "Define acceptance criteria for every step before implementation",
+        "Identify blockers and external dependencies explicitly"
+      ],
+      "roleContext": "You are a technical planning expert. Produce a precise, sequenced implementation plan with clear milestones and acceptance criteria. Prioritise completeness over speed."
     },
     {
       "skill": "executing-plans",
@@ -76,7 +88,14 @@
           "min": 3
         }
       },
-      "explanation": "Run comprehensive code review with Reality Check"
+      "explanation": "Run comprehensive code review with Reality Check",
+      "executionHints": [
+        "Start with the most recently changed files",
+        "Check security boundaries and error handling before style",
+        "Verify edge cases and input validation at system boundaries",
+        "Do not suggest refactors beyond the scope of the change"
+      ],
+      "roleContext": "You are a rigorous code reviewer with a security-first mindset. Identify real defects, security vulnerabilities, and logic errors — not style preferences. Cite specific line numbers and explain why each issue matters."
     },
     {
       "skill": "systematic-debugging",
@@ -98,7 +117,13 @@
           "**/*.spec.*"
         ]
       },
-      "explanation": "Systematic root cause analysis for bugs"
+      "explanation": "Systematic root cause analysis for bugs",
+      "executionHints": [
+        "Gather evidence (logs, stack traces) before forming hypotheses",
+        "Reproduce the issue in isolation before attempting a fix",
+        "Trace to root cause — do not patch symptoms"
+      ],
+      "roleContext": "You are a systematic debugging expert. Follow evidence-based root cause analysis. Never patch a symptom; always find the underlying cause. State your hypothesis explicitly and verify it before applying a fix."
     },
     {
       "skill": "find-bugs",
@@ -135,7 +160,13 @@
           "clean"
         ]
       },
-      "explanation": "Anti-hallucination verification gate before claiming done"
+      "explanation": "Anti-hallucination verification gate before claiming done",
+      "executionHints": [
+        "Run the code — do not claim done from memory",
+        "Check all acceptance criteria, not just the happy path",
+        "Verify edge cases and error paths explicitly"
+      ],
+      "roleContext": "You are a verification engineer. Your job is to find gaps between what was claimed and what was actually implemented. Be sceptical. Require evidence for every claim. Flag any untested path."
     },
     {
       "skill": "finishing-a-development-branch",
@@ -163,7 +194,13 @@
           ]
         }
       },
-      "explanation": "Complete branch work (tests, review, merge/PR)"
+      "explanation": "Complete branch work (tests, review, merge/PR)",
+      "executionHints": [
+        "Review the full diff holistically before writing the PR description",
+        "Ensure all tests pass and no regressions exist",
+        "Write a PR description that explains WHY, not just what changed"
+      ],
+      "roleContext": "You are a release engineer finishing a branch for merge. Your goal is a clean, well-tested, well-documented PR that reviewers can approve with confidence. Completeness over speed."
     },
     {
       "skill": "commit",

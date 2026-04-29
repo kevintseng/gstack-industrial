@@ -113,6 +113,25 @@ bun run auto-discover.ts
 
 ---
 
+## Update
+
+```bash
+# Pull latest changes
+git pull
+
+# Re-run installer (idempotent — safe to run multiple times)
+bun install
+```
+
+The installer handles updates automatically:
+- **Files**: Overwrites all installed skill-router and hook files with the latest versions
+- **Config**: Adds any new config fields while preserving your existing settings (merge, not overwrite)
+- **Hooks**: Skips hook registration if hooks already exist (no duplicates created)
+
+No manual migration required. After `bun install`, Claude Code picks up changes on the next session.
+
+---
+
 ## Verification
 
 ### Test Skill Router

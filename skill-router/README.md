@@ -9,10 +9,11 @@ Analyzes context (message, git status, files, session state) and proactively sug
 ## Features
 
 ✅ **Context-Aware** — Analyzes message, git status, files, and phase to find best match
+✅ **Prompt-Engineered Suggestions** — Confidence labels, evidence line, execution hints, role injection
+✅ **Context Snapshot on Accept** — "yes" sends Claude the project state from when the suggestion was made
 ✅ **Non-Intrusive** — High threshold (80 points), cooldown (5 min), max suggestions per session
 ✅ **Configurable** — User config for threshold, disabled skills, priority boosts, quiet hours
 ✅ **Fast** — <10ms routing time, non-blocking
-✅ **Analytics-Ready** — Tracks suggestions, acceptance rate, usage patterns
 
 ---
 
@@ -29,17 +30,23 @@ Analyzes context (message, git status, files, session state) and proactively sug
 │    skill-router-before-message.ts (Hook)        │
 │  1. Load config & session state                 │
 │  2. Extract context (git, files, phase)         │
-│  3. Run matcher engine                          │
-│  4. Output suggestion if score > threshold      │
-└────────────┬────────────────────────────────────┘
-             │
-             │ If match found
+│  3. Run matcher engine + feedback adjustments   │
+│  4. Format suggestion (confidence, evidence,    │
+│     execution hints) — output to user           │
+│  5. Save context snapshot to session state      │
+└────────────┬─────────────────┬──────────────────┘
+             │                 │
+         "yes"              "no" / other
              ▼
 ┌─────────────────────────────────────────────────┐
-│             User Sees Suggestion                │
-│  💡 Suggestion: Use @skill-name for this task  │
-│  [explanation]                                   │
-│  (Say "yes" to run, or "stop suggesting")       │
+│        Claude Receives XML Context Block        │
+│  <skill-invocation>                             │
+│    <skill>brainstorming</skill>                 │
+│    <role>structured facilitator...</role>       │
+│    <context>branch, phase, git, files...</context>│
+│    <execution-hints>...</execution-hints>       │
+│    <instruction>Invoke @skill now</instruction> │
+│  </skill-invocation>                            │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -56,7 +63,7 @@ Located in `~/.claude/skills/templates/skill-router/`:
 | `types.ts` | Type definitions (Phase, RouterContext, SkillMatcher, etc.) |
 | `context-extractor.ts` | Extracts context from environment (git, files, message) |
 | `matcher-engine.ts` | Scoring algorithm, threshold filtering, ranking |
-| `suggestion-formatter.ts` | Formats suggestions for display |
+| `suggestion-formatter.ts` | Formats suggestions (user-facing) + XML context injection (Claude-facing) |
 | `index.ts` | Main router entry point |
 | `matchers.json` | Skill matcher registry (manual + auto-discovered) |
 | `auto-discover.ts` | Scans SKILL.md files and updates matchers.json |
@@ -154,11 +161,19 @@ The router runs automatically on every message. If a match is found:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 Suggestion: Use @brainstorming for this task
-   Brainstorm ideas with structured thinking
-   (Say "yes" to run, or "stop suggesting" to disable)
+💡 [建議] 使用 @brainstorming
+   Organize ideas with structured thinking before coding
+   根據：keywords: brainstorm • phase: think
+   提示：Explore 3+ alternatives before settling on one
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+(Say "yes" to run, or "stop suggesting" to disable)
 ```
+
+**Confidence labels**: `強烈建議` (score ≥200) / `建議` (≥120) / `可能適用` (≥80)
+
+**Evidence line**: Shows which signals triggered the suggestion (keywords, phase, git state)
+
+**Execution hints**: Static guidance from the matcher + dynamic hints from runtime context (changed files, time since last commit, phase-specific advice)
 
 ### User Responses
 
@@ -358,7 +373,12 @@ Edit `~/.claude/skills/templates/skill-router/matchers.json`:
     "uncommittedFiles": { "min": 1, "max": 10 },
     "branch": { "not": ["main", "master"] }
   },
-  "explanation": "One-line explanation of what this skill does"
+  "explanation": "One-line explanation of what this skill does",
+  "roleContext": "Expert in X, focused on Y and Z",
+  "executionHints": [
+    "Static hint shown to user in suggestion",
+    "Another hint — injected to Claude on accept"
+  ]
 }
 ```
 

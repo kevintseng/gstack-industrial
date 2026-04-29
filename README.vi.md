@@ -2,7 +2,7 @@
 
 # gstack-industrial
 
-**Tự động đề xuất skill Claude Code phù hợp cho công việc của bạn**
+**Skill Claude Code phù hợp, đúng lúc — tự động**
 
 *Lớp tăng cường trên [gstack](https://github.com/garrytan/gstack) — không phải là thay thế*
 
@@ -24,14 +24,14 @@
 
 Bạn đã cài hàng trăm skill Claude Code nhưng không bao giờ nhớ nên dùng cái nào?
 
-**gstack-industrial** giải quyết điều này:
+**gstack-industrial** theo dõi mọi tin nhắn bạn gửi và — đúng lúc — đề xuất skill phù hợp nhất. Nói "yes" và Claude nhận được briefing đầy đủ: vai trò cần đảm nhận, trạng thái dự án lúc đề xuất được tạo, và gợi ý thực thi.
 
 - **Tự động phát hiện** — Quét tất cả SKILL.md đã cài và xây dựng quy tắc định tuyến tự động
-- **Tự động đề xuất** — Đề xuất skill tốt nhất dựa trên tin nhắn và trạng thái dự án
-- **Phản hồi sử dụng** — Học từ những gì bạn chấp nhận/từ chối, điều chỉnh ưu tiên
-- **Học cặp** — Đọc timeline của gstack, dự đoán skill tiếp theo
-- **Nhận biết chế độ repo** — Ngưỡng thấp hơn cho dev solo, cao hơn cho cộng tác (qua gstack)
-- **Không làm phiền** — Chỉ đề xuất khi thực sự hữu ích, không spam
+- **Đề xuất theo ngữ cảnh** — Khớp dựa trên lời nói, git, giai đoạn phát triển và lịch sử
+- **Nhãn độ tin cậy** — `強烈建議` / `建議` / `可能適用` để biết mức độ đề xuất
+- **"yes" → Tiêm ngữ cảnh đầy đủ** — Gửi briefing XML cho Claude (vai trò, snapshot ngữ cảnh, gợi ý)
+- **Học từ sử dụng** — Tăng ưu tiên skill được chấp nhận, giảm skill bị từ chối
+- **Không spam** — Cooldown 5 phút, giới hạn 500/session, cùng skill không đề xuất 3 lần liên tiếp
 
 Tất cả state đều **chỉ lưu cục bộ**. Không telemetry. Không cuộc gọi mạng.
 
@@ -64,6 +64,15 @@ cd gstack-industrial
 # 2. Tự động cài
 bun install
 ```
+
+### Cập nhật
+
+```bash
+git pull
+bun install
+```
+
+Installer là idempotent — chạy lại sẽ ghi đè các file đã cài với phiên bản mới nhất, hợp nhất các trường cấu hình mới (giữ nguyên cài đặt của bạn), và bỏ qua hook đã đăng ký.
 
 ---
 

@@ -2,7 +2,7 @@
 
 # gstack-industrial
 
-**Sugestão automática da skill Claude Code certa para sua tarefa**
+**A skill certa do Claude Code, no momento certo — automaticamente**
 
 *Camada de aprimoramento sobre [gstack](https://github.com/garrytan/gstack) — não é um substituto*
 
@@ -24,14 +24,14 @@
 
 Você instalou centenas de skills do Claude Code mas nunca lembra qual usar?
 
-**gstack-industrial** resolve isso:
+**gstack-industrial** monitora cada mensagem que você envia e — no momento certo — sugere a skill mais relevante. Diga "yes" e Claude recebe um briefing completo: quem ser, o estado do projeto quando a sugestão foi feita, e como executar.
 
-- **Descoberta Automática** — Escaneia todos os SKILL.md instalados e constrói regras de roteamento automaticamente
-- **Sugestão Automática** — Recomenda a melhor skill baseado em sua mensagem e estado do projeto
-- **Feedback de uso** — Aprende com o que você aceita vs dispensa, ajusta prioridades
-- **Aprendizado de pares** — Lê o timeline do gstack, prevê a próxima skill
-- **Ciente do modo repo** — Limite menor para devs solo, maior para colaborativo (via gstack)
-- **Zero Interrupção** — Sugere apenas quando realmente útil, não faz spam
+- **Descoberta Automática** — Escaneia todos os SKILL.md instalados e constrói regras automaticamente
+- **Sugestões com Contexto** — Correspondência com suas palavras, git, fase de desenvolvimento e histórico
+- **Rótulos de Confiança** — `強烈建議` / `建議` / `可能適用` para você saber a intensidade da sugestão
+- **"yes" → Injeção de Contexto Completo** — Envia ao Claude um briefing XML (papel, snapshot de contexto, dicas)
+- **Aprende com Você** — Aumenta prioridade de skills aceitas, reduz das recusadas
+- **Zero Spam** — 5 min cooldown, cap de 500 por sessão, mesma skill não sugerida 3x seguidas
 
 Todo estado é **apenas local**. Sem telemetria. Sem chamadas de rede.
 
@@ -64,6 +64,15 @@ cd gstack-industrial
 # 2. Auto-instalar
 bun install
 ```
+
+### Atualização
+
+```bash
+git pull
+bun install
+```
+
+O instalador é idempotente — re-executar sobrescreve os arquivos instalados com a versão mais recente, mescla novos campos de configuração (preservando suas configurações) e pula hooks já registrados.
 
 ---
 

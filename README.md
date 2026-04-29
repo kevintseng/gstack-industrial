@@ -2,7 +2,7 @@
 
 # gstack-industrial
 
-**Auto-suggest the right Claude Code skill for your task**
+**The right Claude Code skill, at the right moment — automatically**
 
 *Enhancement layer on top of [gstack](https://github.com/garrytan/gstack) — not a replacement.*
 
@@ -20,22 +20,62 @@
 
 ---
 
----
-
 ## What is this?
 
 You have hundreds of Claude Code skills installed but can never remember which one to use?
 
-**gstack-industrial** solves this:
+**gstack-industrial** watches every message you send and — when it sees the right moment — suggests the most relevant skill. Say "yes" and Claude gets a fully-prepared context: who to be, what the project state was when the suggestion was made, and how to execute.
 
 - **Auto-Discovery** — Scans all installed SKILL.md files and builds routing rules automatically
-- **Auto-Suggest** — Recommends the best skill based on your message and project state
-- **Usage feedback** — Learns from what you accept vs dismiss, boosts/penalizes priority
-- **Pair learning** — Reads gstack's timeline, predicts next skill after you accept one
-- **Repo-mode aware** — Lower threshold for solo devs, higher for collaborative (via gstack)
-- **Zero Interruption** — Only suggests when truly helpful, won't spam you
+- **Context-Aware Suggestions** — Matches on your words, git state, development phase, and usage history
+- **Confidence Labels** — `強烈建議` / `建議` / `可能適用` so you know how strongly to heed it
+- **"Yes" → Full Context Injection** — Sends Claude a structured brief (role, context snapshot, execution hints) via XML
+- **Learns From You** — Boosts skills you accept, penalizes ones you dismiss
+- **Zero Spam** — 5-minute cooldown, 500-suggestion session cap, same skill never suggested 3× in a row
 
 All state is **local-only**. No telemetry. No network calls.
+
+---
+
+## What it looks like
+
+```
+You say: "I need to brainstorm how to implement this"
+
+Claude responds:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💡 [建議] 使用 @brainstorming
+   Brainstorm ideas with structured thinking
+   根據：keywords: brainstorm • phase: think
+   提示：Explore the problem space before proposing solutions
+         Generate 3+ diverse alternatives before evaluating any
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+(Say "yes" to run, or "stop suggesting" to disable)
+```
+
+**Say "yes"** and Claude receives:
+
+```xml
+<skill-invocation>
+  <skill>brainstorming</skill>
+  <role>You are a structured brainstorming facilitator. Help explore ideas systematically without premature implementation commitments. Present trade-offs and alternatives — do not write code.</role>
+  <context>
+    <branch>feature/auth-redesign</branch>
+    <phase>think</phase>
+    <git-status>dirty</git-status>
+    <uncommitted-files>src/auth.ts, src/session.ts, tests/auth.test.ts (+2)</uncommitted-files>
+    <last-commit>47 minutes ago</last-commit>
+  </context>
+  <execution-hints>
+    <hint>Explore the problem space before proposing solutions</hint>
+    <hint>Generate 3+ diverse alternatives before evaluating any</hint>
+    <hint>No commit in 47 min — consider checkpointing</hint>
+  </execution-hints>
+  <instruction>Invoke the @brainstorming skill now, using the context above to focus your execution.</instruction>
+</skill-invocation>
+```
+
+Claude knows what to do — no re-explaining required.
 
 ---
 
@@ -77,19 +117,18 @@ The installer automatically:
 
 Installation is idempotent — running it again won't create duplicate hooks.
 
+### Update
+
+```bash
+git pull
+bun install
+```
+
+The installer is idempotent — re-running it overwrites installed files with the latest version, migrates any new config fields (preserving your settings), and skips hook registration if hooks already exist.
+
 ### Usage
 
-**Auto mode** (recommended): Do nothing, Claude will auto-suggest at the right time
-
-```
-You say: "I need to think about how to implement this feature"
-Claude auto-responds:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Suggestion: Use @brainstorming
-   Organize ideas with structured thinking
-   (Say "yes" to run, or "stop suggesting" to disable)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+**Auto mode** (recommended): Do nothing, Claude will auto-suggest at the right time.
 
 **Manual testing**:
 
@@ -137,6 +176,14 @@ bun run discover:dry
 4. **Repo mode** — Lower threshold for solo devs (60), higher for collaborative (85)
 5. **Your history** — Boosts skills you often accept, penalizes ones you dismiss
 6. **Skill patterns** — Predicts next skill based on your past sequences (via gstack timeline)
+
+**Scoring model:**
+- Keywords: +50 per keyword match
+- Regex match: +75
+- Phase match: +100
+- Git status: +30
+- File pattern: +40 per match
+- Feedback boost/penalty: from usage history
 
 **Anti-spam mechanisms:**
 - Cooldown: no repeat suggestions within 5 minutes
@@ -215,7 +262,7 @@ gstack-industrial/
 │   ├── types.ts                  # Type definitions
 │   ├── index.ts                  # Router entry point
 │   ├── gen-skill-docs.ts         # Template generator
-│   ├── suggestion-formatter.ts   # Suggestion formatter
+│   ├── suggestion-formatter.ts   # Suggestion formatter + XML injection
 │   └── test-cli.ts               # CLI test tool
 ├── hooks/
 │   ├── skill-router-before-message.ts    # UserPromptSubmit hook
@@ -269,3 +316,4 @@ MIT License - see [LICENSE](LICENSE)
 
 - **[Garry Tan](https://github.com/garrytan)** — Original gstack philosophy
 - **[Claude Code](https://claude.ai/code)** — Integration platform
+- **[Anthropic Prompt Engineering](https://www.anthropic.com)** — 6-element framework that powers suggestion quality

@@ -2,6 +2,32 @@
 
 All notable changes to gstack-industrial.
 
+## [1.3.0] - 2026-04-29 — Prompt-Engineered Suggestions (6 Elements)
+
+gstack-industrial suggestions are now built on Anthropic's internal prompt engineering framework. When you say "yes", Claude receives a structured XML context block — not just a skill name. Each suggestion tells Claude *who* to be, *what context* it was made in, and *how* to execute — reducing the need to explain yourself twice.
+
+### Added
+
+- **Confidence labels.** Suggestions now display `強烈建議` / `建議` / `可能適用` based on match score (≥200 / ≥120 / ≥80), so you can calibrate how strongly to heed the suggestion.
+- **Evidence line.** Each suggestion shows which signals triggered it (e.g., `根據：keywords: brainstorm • phase: think`), so you understand *why* it was suggested.
+- **Context snapshot injection.** When you accept a suggestion ("yes"), Claude receives the context *at the time the suggestion was made* — branch, phase, git status, uncommitted files, time since last commit. This is the time-of-capture vs time-of-use pattern: the snapshot preserves WHY the suggestion was relevant.
+- **Execution hints.** Matchers now carry static guidance (e.g., "Run 3+ alternatives before settling on one"), combined with dynamic runtime hints (changed files list, time since last commit, phase-specific advice). Injected into Claude's context on accept.
+- **Role definition injection.** Matchers can define `roleContext` (e.g., "rigorous code reviewer with security-first mindset"). This is injected as `<role>` in the XML block when you accept, priming Claude for the specific posture the skill requires.
+- **XML-structured context injection.** When you say "yes", Claude receives a `<skill-invocation>` XML block with `<skill>`, `<role>`, `<context>`, `<execution-hints>`, and `<instruction>` — per Anthropic's recommendation for reducing ambiguity between role, context, and instruction.
+- **New suggestion format.** Bordered display (━━━) with confidence label, explanation, evidence line, and contextual hints. Consistent with a mini-card UX.
+
+### Changed
+
+- `formatSuggestion()` now always shows evidence (previously conditional). Evidence is strictly better than none.
+- `SkillMatcher` and `SkillMatch` types extended with `executionHints?: string[]` and `roleContext?: string`.
+- `SavedContext` interface added — snapshot preserved in session state and restored on "yes".
+- Six built-in matchers (`brainstorming`, `writing-plans`, `sa:comprehensive-code-review`, `systematic-debugging`, `verification-before-completion`, `finishing-a-development-branch`) now include `roleContext` and `executionHints`.
+
+### Fixed
+
+- Hook: `router.getContext()` was called inside the try block AND outside, causing context to be captured twice. Now captured once before the try block.
+- Hook: `import type { SavedContext }` used relative path that breaks when hook is deployed to `~/.claude/hooks/`. Fixed by defining `SavedContext` inline in the hook file.
+
 ## [1.2.0] - 2026-04-04 — Learning, Repo-Mode Awareness, Visible Warnings
 
 gstack-industrial now learns from your usage. When you accept a suggestion, it remembers that pair — next time you accept the first skill, it predicts the next one. When you dismiss a suggestion, that skill gets penalized. Plus: repo-mode aware thresholds (lower for solo devs), visible warnings when limits hit (no more silent failure), and cleaner integration with gstack (reuses `gstack-repo-mode` and `timeline.jsonl` instead of duplicating).
