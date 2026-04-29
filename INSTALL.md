@@ -27,6 +27,7 @@ Installation is idempotent — safe to run multiple times.
 
 ### Prerequisites
 
+- [gstack](https://github.com/garrytan/gstack) installed (required — gstack-industrial is a layer on top)
 - [Bun](https://bun.sh) >= 1.0.0
 - Claude Code installed
 
@@ -177,7 +178,12 @@ bun run skill-router-before-message.ts "I need to review my code"
 | `maxSuggestionsPerSession` | number | `500` | Safety cap against runaway loops (cooldown is the real throttle) |
 | `cooldownMinutes` | number | `5` | Cooldown between suggestions |
 | `disabledSkills` | string[] | `[]` | Skills to never suggest |
-| `priorityBoosts` | object | `{}` | Skill name -> priority boost (number) |
+| `priorityBoosts` | object | `{}` | Skill name → priority boost (number) |
+| `feedbackBoost` | number | `20` | Score boost for skills you often accept |
+| `feedbackPenalty` | number | `30` | Score penalty for skills you often dismiss |
+| `showLimitWarnings` | boolean | `true` | Show visible warning when session suggestion cap is hit |
+| `repoModeThresholds` | object | `{solo:60, collaborative:85, unknown:80}` | Threshold per repo mode (reads gstack-repo-mode) |
+| `lang` | string | _(auto)_ | Force UI language. Auto-detected from system locale if unset. Values: `en`, `zh-TW`, `zh-CN`, `ja`, `ko`, `pt-BR`, `id`, `vi` |
 | `quietHours.enabled` | boolean | `false` | Enable quiet hours |
 | `quietHours.start` | string | `"22:00"` | Quiet hours start (HH:MM) |
 | `quietHours.end` | string | `"08:00"` | Quiet hours end (HH:MM) |
@@ -218,6 +224,20 @@ name: my-skill
 description: What this skill does
 ---
 ```
+
+**Optional frontmatter fields** for richer routing (v1.3.0+):
+```yaml
+---
+name: my-skill
+description: What this skill does
+triggers:
+  - keyword one
+  - keyword two
+preamble-tier: 1
+---
+```
+`triggers:` — explicit routing keywords (preferred over heuristic extraction from description).
+`preamble-tier: 1` — marks skill as core/fundamental; gets +1 priority boost in suggestions.
 
 ### Hook not firing
 

@@ -109,6 +109,12 @@ Edit `~/.claude/config/skill-router.json`:
 }
 ```
 
+**Penggantian bahasa** (terdeteksi otomatis dari locale sistem):
+```json
+{ "lang": "id" }
+```
+Didukung: `en`, `zh-TW`, `zh-CN`, `ja`, `ko`, `pt-BR`, `id`, `vi`
+
 Detail: [INSTALL.md](INSTALL.md)
 
 ---

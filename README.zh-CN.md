@@ -111,7 +111,7 @@ bun run test-cli.ts "我要 review 代码" --debug
 
 ---
 
-## Auto-Discovery（v1.1.0 新功能）
+## Auto-Discovery
 
 每次 Claude Code session 启动时，auto-discover 会自动扫描 `~/.claude/skills/` 下所有 SKILL.md 文件：
 
@@ -199,6 +199,12 @@ bun run test-cli.ts "我要 review 代码" --debug
   "showLimitWarnings": true
 }
 ```
+
+**语言设置**（默认自动检测系统 locale）：
+```json
+{ "lang": "zh-CN" }
+```
+支持：`en`、`zh-TW`、`zh-CN`、`ja`、`ko`、`pt-BR`、`id`、`vi`
 
 详细说明：[INSTALL.md](INSTALL.md)
 

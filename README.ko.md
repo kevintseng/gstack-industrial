@@ -133,6 +133,12 @@ bun run install
 }
 ```
 
+**언어 설정** (시스템 locale에서 자동 감지):
+```json
+{ "lang": "ko" }
+```
+지원: `en`, `zh-TW`, `zh-CN`, `ja`, `ko`, `pt-BR`, `id`, `vi`
+
 자세한 내용: [INSTALL.md](INSTALL.md)
 
 ---

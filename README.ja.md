@@ -113,7 +113,7 @@ bun run test-cli.ts "コードをレビューしたい" --debug
 
 ---
 
-## Auto-Discovery（v1.1.0）
+## Auto-Discovery
 
 Claude Code セッション開始時に、auto-discover が `~/.claude/skills/` 配下の全 SKILL.md ファイルを自動スキャンします：
 
@@ -212,32 +212,13 @@ bun run discover:dry
 }
 ```
 
+**言語設定**（デフォルトはシステム locale を自動検出）：
+```json
+{ "lang": "ja" }
+```
+対応: `en`、`zh-TW`、`zh-CN`、`ja`、`ko`、`pt-BR`、`id`、`vi`
+
 詳細：[INSTALL.md](INSTALL.md)
-
----
-
-## ファイル構成
-
-```
-gstack-industrial/
-├── skill-router/
-│   ├── auto-discover.ts          # SKILL.md をスキャン -> matchers.json
-│   ├── matchers.json             # ルーティングルール（手動 + 自動）
-│   ├── matcher-engine.ts         # スコアリングエンジン
-│   ├── context-extractor.ts      # コンテキスト抽出
-│   ├── types.ts                  # 型定義
-│   ├── index.ts                  # ルーターエントリポイント
-│   ├── gen-skill-docs.ts         # テンプレートジェネレーター
-│   ├── suggestion-formatter.ts   # 提案フォーマッター
-│   └── test-cli.ts               # CLI テストツール
-├── hooks/
-│   ├── skill-router-before-message.ts    # UserPromptSubmit hook
-│   └── skill-discovery-session-start.sh  # SessionStart hook
-├── standard-sections/            # 共有テンプレートセクション
-├── install.ts                    # インストールスクリプト
-├── package.json
-└── README.md
-```
 
 ---
 

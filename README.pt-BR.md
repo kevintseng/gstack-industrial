@@ -109,6 +109,12 @@ Edite `~/.claude/config/skill-router.json`:
 }
 ```
 
+**Substituição de idioma** (detectado automaticamente pelo locale do sistema):
+```json
+{ "lang": "pt-BR" }
+```
+Suporte: `en`, `zh-TW`, `zh-CN`, `ja`, `ko`, `pt-BR`, `id`, `vi`
+
 Detalhes: [INSTALL.md](INSTALL.md)
 
 ---

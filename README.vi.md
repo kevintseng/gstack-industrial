@@ -109,6 +109,12 @@ Chỉnh sửa `~/.claude/config/skill-router.json`:
 }
 ```
 
+**Thay thế ngôn ngữ** (tự động phát hiện từ locale hệ thống):
+```json
+{ "lang": "vi" }
+```
+Hỗ trợ: `en`, `zh-TW`, `zh-CN`, `ja`, `ko`, `pt-BR`, `id`, `vi`
+
 Chi tiết: [INSTALL.md](INSTALL.md)
 
 ---
