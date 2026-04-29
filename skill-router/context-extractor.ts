@@ -9,6 +9,9 @@
  */
 
 import { execSync } from 'child_process';
+import { readFileSync, existsSync } from 'fs';
+import { homedir } from 'os';
+import { resolve } from 'path';
 import { RouterContext, Phase, GitStatus } from './types';
 
 /**
@@ -182,6 +185,34 @@ function isWorkingHours(): boolean {
 }
 
 /**
+ * Detect UI locale: config file → system LANG env → 'en'
+ *
+ * Supported BCP 47 tags: en, zh-TW, zh-CN, ja, ko, pt-BR, id, vi
+ */
+function detectLocale(): string {
+  const supported = ['en', 'zh-TW', 'zh-CN', 'ja', 'ko', 'pt-BR', 'id', 'vi'];
+
+  try {
+    const configPath = resolve(homedir(), '.claude/config/skill-router.json');
+    if (existsSync(configPath)) {
+      const cfg = JSON.parse(readFileSync(configPath, 'utf-8'));
+      if (cfg.lang && supported.includes(cfg.lang)) return cfg.lang;
+    }
+  } catch {}
+
+  // Parse LANG="zh_TW.UTF-8" → "zh-TW", "ja_JP.UTF-8" → "ja"
+  const raw = process.env.LANG ?? process.env.LC_ALL ?? process.env.LC_MESSAGES ?? '';
+  const m = raw.match(/^([a-z]{2})_([A-Z]{2})/);
+  if (m) {
+    const tag = `${m[1]}-${m[2]}`;
+    if (supported.includes(tag)) return tag;
+    if (supported.includes(m[1])) return m[1];
+  }
+
+  return 'en';
+}
+
+/**
  * Get active session count from universal preamble
  * @security Static command with safe path, no user input
  */
@@ -232,6 +263,7 @@ export function extractContext(message: string): RouterContext {
   const timeSinceLastCommit = getTimeSinceLastCommit();
   const workingHours = isWorkingHours();
   const eli16Mode = activeSessions >= 3;
+  const lang = detectLocale();
 
   return {
     message,
@@ -249,5 +281,6 @@ export function extractContext(message: string): RouterContext {
     recentCommits,
     timeSinceLastCommit,
     workingHours,
+    lang,
   };
 }

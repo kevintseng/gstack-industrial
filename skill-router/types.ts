@@ -54,6 +54,9 @@ export interface RouterContext {
   // Time context
   timeSinceLastCommit?: number; // Minutes
   workingHours: boolean;        // 9am-6pm user's timezone
+
+  // Locale
+  lang: string;                 // BCP 47 tag, e.g. 'en', 'zh-TW', 'ja'
 }
 
 /**
@@ -164,6 +167,7 @@ export interface SkillRouterConfig {
   cooldownMinutes: number;                // Time between suggestions
   disabledSkills: string[];               // Skills to never suggest
   priorityBoosts: Record<string, number>; // Skill-specific score boosts
+  lang?: string;                          // UI language override (BCP 47, e.g. 'en', 'zh-TW')
   quietHours?: {
     enabled: boolean;
     start: string;                        // "22:00"

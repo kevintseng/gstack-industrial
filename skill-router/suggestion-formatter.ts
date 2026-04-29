@@ -7,16 +7,44 @@
 
 import { SkillMatch, RouterContext, SavedContext } from './types';
 
+// ─── i18n ─────────────────────────────────────────────────────────────────────
+
+interface LocaleStrings {
+  highlyRecommended: string;
+  suggested: string;
+  mayApply: string;
+  /** Template: '{skill}' is replaced with the skill name, e.g. 'Use @{skill}' */
+  skillTemplate: string;
+  triggeredBy: string;
+  hint: string;
+}
+
+const LOCALES: Record<string, LocaleStrings> = {
+  'en':    { highlyRecommended: 'Highly Recommended', suggested: 'Suggested',        mayApply: 'May Apply',          skillTemplate: 'Use @{skill}',        triggeredBy: 'Triggered by:', hint: 'Hint:'      },
+  'zh-TW': { highlyRecommended: '強烈建議',            suggested: '建議',              mayApply: '可能適用',           skillTemplate: '使用 @{skill}',        triggeredBy: '根據：',        hint: '提示：'      },
+  'zh-CN': { highlyRecommended: '强烈建议',            suggested: '建议',              mayApply: '可能适用',           skillTemplate: '使用 @{skill}',        triggeredBy: '根据：',        hint: '提示：'      },
+  'ja':    { highlyRecommended: '強く推奨',            suggested: '推奨',              mayApply: '参考',               skillTemplate: '@{skill} を実行',      triggeredBy: '根拠：',        hint: 'ヒント：'    },
+  'ko':    { highlyRecommended: '강력 추천',           suggested: '추천',              mayApply: '가능한 적용',         skillTemplate: '@{skill} 실행',        triggeredBy: '근거:',         hint: '힌트:'       },
+  'pt-BR': { highlyRecommended: 'Altamente Recomendado', suggested: 'Sugerido',       mayApply: 'Pode Aplicar',       skillTemplate: 'Usar @{skill}',        triggeredBy: 'Acionado por:', hint: 'Dica:'      },
+  'id':    { highlyRecommended: 'Sangat Disarankan',  suggested: 'Disarankan',        mayApply: 'Mungkin Berlaku',    skillTemplate: 'Gunakan @{skill}',     triggeredBy: 'Dipicu oleh:',  hint: 'Petunjuk:'  },
+  'vi':    { highlyRecommended: 'Đề xuất mạnh',       suggested: 'Đề xuất',           mayApply: 'Có thể áp dụng',    skillTemplate: 'Dùng @{skill}',        triggeredBy: 'Kích hoạt bởi:', hint: 'Gợi ý:'    },
+};
+
+function getStrings(lang: string): LocaleStrings {
+  return LOCALES[lang] ?? LOCALES['en'];
+}
+
 // ─── Element 2: Confidence Label ─────────────────────────────────────────────
 
 /**
  * Convert numeric score to a human-readable confidence label.
  * Gives users calibrated trust instead of uniform suggestions.
  */
-export function formatConfidenceLabel(score: number): string {
-  if (score >= 200) return '強烈建議';
-  if (score >= 120) return '建議';
-  return '可能適用';
+export function formatConfidenceLabel(score: number, lang: string = 'en'): string {
+  const s = getStrings(lang);
+  if (score >= 200) return s.highlyRecommended;
+  if (score >= 120) return s.suggested;
+  return s.mayApply;
 }
 
 // ─── Element 4: Contextual Execution Hints ───────────────────────────────────
@@ -65,9 +93,9 @@ export function generateContextualExecutionHints(
 /**
  * Format trigger evidence as a human-readable "why this was suggested" line.
  */
-export function formatEvidence(match: SkillMatch): string {
+export function formatEvidence(match: SkillMatch, lang: string = 'en'): string {
   if (match.matchedTriggers.length === 0) return '';
-  return `根據：${match.matchedTriggers.join(' • ')}`;
+  return `${getStrings(lang).triggeredBy} ${match.matchedTriggers.join(' • ')}`;
 }
 
 // ─── Element 5: Structured Suggestion ───────────────────────────────────────
@@ -84,13 +112,16 @@ export function formatSuggestion(
   ctx: RouterContext,
   _includeContext: boolean = false
 ): string {
-  const confidence = formatConfidenceLabel(match.score);
-  const evidence = formatEvidence(match);
+  const lang = ctx.lang ?? 'en';
+  const strings = getStrings(lang);
+  const confidence = formatConfidenceLabel(match.score, lang);
+  const evidence = formatEvidence(match, lang);
   const hints = generateContextualExecutionHints(match, ctx);
+  const skillRef = strings.skillTemplate.replace('{skill}', match.skill);
 
   const lines = [
     '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    `💡 [${confidence}] 使用 @${match.skill}`,
+    `💡 [${confidence}] ${skillRef}`,
     `   ${match.explanation}`,
   ];
 
@@ -99,7 +130,7 @@ export function formatSuggestion(
   }
 
   if (hints.length > 0) {
-    lines.push(`   提示：${hints[0]}`);
+    lines.push(`   ${strings.hint} ${hints[0]}`);
     for (const hint of hints.slice(1)) {
       lines.push(`         ${hint}`);
     }
@@ -123,15 +154,17 @@ export function formatMultipleSuggestions(
     return 'No skill suggestions found for this context.';
   }
 
+  const lang = ctx.lang ?? 'en';
+  const strings = getStrings(lang);
   const topMatches = matches.slice(0, limit);
   let output = `💡 Skill Suggestions:\n\n`;
 
   topMatches.forEach((match, index) => {
-    const confidence = formatConfidenceLabel(match.score);
+    const confidence = formatConfidenceLabel(match.score, lang);
     output += `${index + 1}. @${match.skill} [${confidence}]\n`;
     output += `   ${match.explanation}\n`;
     if (match.matchedTriggers.length > 0) {
-      output += `   根據：${match.matchedTriggers.join(' • ')}\n`;
+      output += `   ${strings.triggeredBy} ${match.matchedTriggers.join(' • ')}\n`;
     }
     output += `\n`;
   });
