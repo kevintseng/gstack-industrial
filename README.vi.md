@@ -28,7 +28,7 @@ Bạn đã cài hàng trăm skill Claude Code nhưng không bao giờ nhớ nên
 
 - **Tự động phát hiện** — Quét tất cả SKILL.md đã cài và xây dựng quy tắc định tuyến tự động
 - **Đề xuất theo ngữ cảnh** — Khớp dựa trên lời nói, git, giai đoạn phát triển và lịch sử
-- **Nhãn độ tin cậy** — `強烈建議` / `建議` / `可能適用` để biết mức độ đề xuất
+- **Nhãn độ tin cậy** — `Đề xuất mạnh` / `Đề xuất` / `Có thể áp dụng` để biết mức độ đề xuất
 - **"yes" → Tiêm ngữ cảnh đầy đủ** — Gửi briefing XML cho Claude (vai trò, snapshot ngữ cảnh, gợi ý)
 - **Học từ sử dụng** — Tăng ưu tiên skill được chấp nhận, giảm skill bị từ chối
 - **Không spam** — Cooldown 5 phút, giới hạn 500/session, cùng skill không đề xuất 3 lần liên tiếp

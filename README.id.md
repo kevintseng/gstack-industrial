@@ -28,7 +28,7 @@ Anda menginstal ratusan skill Claude Code tapi tidak pernah ingat yang mana haru
 
 - **Penemuan Otomatis** — Memindai semua SKILL.md terinstal dan membangun aturan routing secara otomatis
 - **Saran Berbasis Konteks** — Pencocokan berdasarkan kata-kata, git, fase pengembangan, dan riwayat
-- **Label Kepercayaan** — `強烈建議` / `建議` / `可能適用` untuk mengetahui kekuatan saran
+- **Label Kepercayaan** — `Sangat Disarankan` / `Disarankan` / `Mungkin Berlaku` untuk mengetahui kekuatan saran
 - **"yes" → Injeksi Konteks Lengkap** — Mengirim briefing XML ke Claude (peran, snapshot konteks, petunjuk)
 - **Belajar dari Penggunaan** — Meningkatkan prioritas skill yang diterima, mengurangi yang ditolak
 - **Tanpa Spam** — 5 menit cooldown, batas 500/sesi, skill sama tidak disarankan 3x berturut-turut

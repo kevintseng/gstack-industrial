@@ -28,7 +28,7 @@ Você instalou centenas de skills do Claude Code mas nunca lembra qual usar?
 
 - **Descoberta Automática** — Escaneia todos os SKILL.md instalados e constrói regras automaticamente
 - **Sugestões com Contexto** — Correspondência com suas palavras, git, fase de desenvolvimento e histórico
-- **Rótulos de Confiança** — `強烈建議` / `建議` / `可能適用` para você saber a intensidade da sugestão
+- **Rótulos de Confiança** — `Altamente Recomendado` / `Sugerido` / `Pode Aplicar` para você saber a intensidade da sugestão
 - **"yes" → Injeção de Contexto Completo** — Envia ao Claude um briefing XML (papel, snapshot de contexto, dicas)
 - **Aprende com Você** — Aumenta prioridade de skills aceitas, reduz das recusadas
 - **Zero Spam** — 5 min cooldown, cap de 500 por sessão, mesma skill não sugerida 3x seguidas

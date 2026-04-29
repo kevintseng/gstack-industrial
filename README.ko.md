@@ -83,10 +83,10 @@ bun install
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 [추천] 使用 @brainstorming
-   Brainstorm ideas with structured thinking
-   根據：keywords: brainstorm • phase: think
-   提示：Explore the problem space before proposing solutions
+💡 [추천] @brainstorming 실행
+   구조적인 방식으로 아이디어를 정리하고 브레인스토밍
+   근거: keywords: brainstorm • phase: think
+   힌트: 솔루션 제안 전에 문제 공간 먼저 탐색
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 (Say "yes" to run, or "stop suggesting" to disable)
 ```

@@ -28,7 +28,7 @@ You have hundreds of Claude Code skills installed but can never remember which o
 
 - **Auto-Discovery** — Scans all installed SKILL.md files and builds routing rules automatically
 - **Context-Aware Suggestions** — Matches on your words, git state, development phase, and usage history
-- **Confidence Labels** — `強烈建議` / `建議` / `可能適用` so you know how strongly to heed it
+- **Confidence Labels** — `Highly Recommended` / `Suggested` / `May Apply` so you know how strongly to heed it
 - **"Yes" → Full Context Injection** — Sends Claude a structured brief (role, context snapshot, execution hints) via XML
 - **Learns From You** — Boosts skills you accept, penalizes ones you dismiss
 - **Zero Spam** — 5-minute cooldown, 500-suggestion session cap, same skill never suggested 3× in a row
@@ -44,10 +44,10 @@ You say: "I need to brainstorm how to implement this"
 
 Claude responds:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 [建議] 使用 @brainstorming
+💡 [Suggested] Use @brainstorming
    Brainstorm ideas with structured thinking
-   根據：keywords: brainstorm • phase: think
-   提示：Explore the problem space before proposing solutions
+   Triggered by: keywords: brainstorm • phase: think
+   Hint: Explore the problem space before proposing solutions
          Generate 3+ diverse alternatives before evaluating any
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 (Say "yes" to run, or "stop suggesting" to disable)
