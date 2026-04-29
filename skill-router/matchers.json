@@ -21,7 +21,7 @@
         "Generate 3+ diverse alternatives before evaluating any",
         "Avoid committing to implementation details in this phase"
       ],
-      "roleContext": "You are a structured brainstorming facilitator. Help explore ideas systematically without premature implementation commitments. Present trade-offs and alternatives \u2014 do not write code."
+      "roleContext": "You are a structured brainstorming facilitator. Help explore ideas systematically without premature implementation commitments. Present trade-offs and alternatives — do not write code."
     },
     {
       "skill": "writing-plans",
@@ -95,7 +95,7 @@
         "Verify edge cases and input validation at system boundaries",
         "Do not suggest refactors beyond the scope of the change"
       ],
-      "roleContext": "You are a rigorous code reviewer with a security-first mindset. Identify real defects, security vulnerabilities, and logic errors \u2014 not style preferences. Cite specific line numbers and explain why each issue matters."
+      "roleContext": "You are a rigorous code reviewer with a security-first mindset. Identify real defects, security vulnerabilities, and logic errors — not style preferences. Cite specific line numbers and explain why each issue matters."
     },
     {
       "skill": "systematic-debugging",
@@ -121,7 +121,7 @@
       "executionHints": [
         "Gather evidence (logs, stack traces) before forming hypotheses",
         "Reproduce the issue in isolation before attempting a fix",
-        "Trace to root cause \u2014 do not patch symptoms"
+        "Trace to root cause — do not patch symptoms"
       ],
       "roleContext": "You are a systematic debugging expert. Follow evidence-based root cause analysis. Never patch a symptom; always find the underlying cause. State your hypothesis explicitly and verify it before applying a fix."
     },
@@ -162,7 +162,7 @@
       },
       "explanation": "Anti-hallucination verification gate before claiming done",
       "executionHints": [
-        "Run the code \u2014 do not claim done from memory",
+        "Run the code — do not claim done from memory",
         "Check all acceptance criteria, not just the happy path",
         "Verify edge cases and error paths explicitly"
       ],
@@ -440,12 +440,13 @@
         "phase": [
           "build",
           "test"
-        ]
+        ],
+        "regex": "\\bscrape\\b"
       },
       "explanation": "Pull structured data from a web page via browser automation",
       "executionHints": [
         "First call prototypes; subsequent calls with matching intent run in ~200ms",
-        "Read-only \u2014 for form fills and clicks, use /automate"
+        "Read-only — for form fills and clicks, use /automate"
       ],
       "roleContext": "You are a web scraping specialist. Drive the browser to extract structured data, return JSON, and suggest /skillify to codify the flow for future reuse."
     },
@@ -508,7 +509,10 @@
           "think",
           "review"
         ],
-        "regex": "learnings?|what.*learned|past patterns|prune.*learn"
+        "regex": "learnings?|what.*learned|past patterns|prune.*learn",
+        "gitStatus": [
+          "clean"
+        ]
       },
       "explanation": "Review, search, prune, and export what gstack has learned across sessions",
       "executionHints": [
@@ -529,7 +533,8 @@
         ],
         "phase": [
           "ship"
-        ]
+        ],
+        "regex": "\\bcanary\\b"
       },
       "explanation": "Monitor production after shipping with post-deploy health checks",
       "executionHints": [
@@ -569,7 +574,8 @@
         "phase": [
           "review",
           "think"
-        ]
+        ],
+        "regex": "health.check|code.health|codebase.health|technical.health"
       },
       "explanation": "Run a code quality and health check dashboard on the codebase",
       "executionHints": [

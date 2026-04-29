@@ -2,9 +2,11 @@
 
 All notable changes to gstack-industrial.
 
-## [1.3.0] - 2026-04-29 — Prompt-Engineered Suggestions (6 Elements)
+## [1.3.0] - 2026-04-30 — Prompt Engineering, gstack Sync, i18n, Security
 
 gstack-industrial suggestions are now built on Anthropic's internal prompt engineering framework. When you say "yes", Claude receives a structured XML context block — not just a skill name. Each suggestion tells Claude *who* to be, *what context* it was made in, and *how* to execute — reducing the need to explain yourself twice.
+
+Also in this release: auto-discovery now reads `triggers:` and `preamble-tier:` directly from gstack's SKILL.md frontmatter (more accurate than keyword heuristics), 8 new gstack skill matchers, fully localized UI across 8 languages, and a security fix removing private skill names from the public repo.
 
 ### Added
 
@@ -15,6 +17,10 @@ gstack-industrial suggestions are now built on Anthropic's internal prompt engin
 - **Role definition injection.** Matchers can define `roleContext` (e.g., "rigorous code reviewer with security-first mindset"). This is injected as `<role>` in the XML block when you accept, priming Claude for the specific posture the skill requires.
 - **XML-structured context injection.** When you say "yes", Claude receives a `<skill-invocation>` XML block with `<skill>`, `<role>`, `<context>`, `<execution-hints>`, and `<instruction>` — per Anthropic's recommendation for reducing ambiguity between role, context, and instruction.
 - **New suggestion format.** Bordered display (━━━) with confidence label, explanation, evidence line, and contextual hints. Consistent with a mini-card UX.
+- **Locale-aware suggestion UI.** Suggestion output now renders in the user's system language (EN, zh-TW, zh-CN, ja, ko, pt-BR, id, vi). Confidence labels, evidence prefix, and call-to-action are fully translated.
+- **Auto-discovery reads gstack frontmatter.** `auto-discover.ts` now parses `triggers:` (YAML list) and `preamble-tier:` from SKILL.md frontmatter. Explicit triggers are preferred over heuristic keyword extraction — more accurate routing with less false positives.
+- **`preamble-tier: 1` priority boost.** Skills marked as gstack core skills receive a +1 priority boost in auto-discovery, ensuring fundamental skills are suggested before extended ones.
+- **8 new matchers for gstack skills:** `scrape`, `skillify`, `landing-report`, `learn`, `canary`, `land-and-deploy`, `health`, `plan-tune`. Includes regex triggers for natural-language phrases.
 
 ### Changed
 
@@ -22,11 +28,31 @@ gstack-industrial suggestions are now built on Anthropic's internal prompt engin
 - `SkillMatcher` and `SkillMatch` types extended with `executionHints?: string[]` and `roleContext?: string`.
 - `SavedContext` interface added — snapshot preserved in session state and restored on "yes".
 - Six built-in matchers (`brainstorming`, `writing-plans`, `sa:comprehensive-code-review`, `systematic-debugging`, `verification-before-completion`, `finishing-a-development-branch`) now include `roleContext` and `executionHints`.
+- Auto-discovery prefers frontmatter `triggers:` over heuristic keyword extraction when available.
+- `parseFrontmatter()` extended to handle YAML list syntax (`key:\n  - item`), required to read gstack's `triggers:` field.
+- `SUPPORTED_LOCALES` is now a single export from `suggestion-formatter.ts`; `context-extractor.ts` imports it instead of maintaining its own copy.
 
 ### Fixed
 
 - Hook: `router.getContext()` was called inside the try block AND outside, causing context to be captured twice. Now captured once before the try block.
 - Hook: `import type { SavedContext }` used relative path that breaks when hook is deployed to `~/.claude/hooks/`. Fixed by defining `SavedContext` inline in the hook file.
+- `learn` matcher: scored below `verification-before-completion` on clean branches (125 vs 130); added `gitStatus: clean` to lift intent score above context noise (now 155).
+- `scrape` matcher: only scored +50 (keyword) in "ship" phase, below the 80 threshold; added `regex: \bscrape\b` for phase-independent triggering (now 125).
+- `canary` matcher: only scored +50 in non-ship phases (below threshold); added `regex: \bcanary\b` for phase-independent triggering.
+- `health` matcher: only scored +50 in non-review/think phases (below threshold); added regex for phase-independent triggering.
+- `parseFrontmatter`: `fm.description as string` was unsafe if a SKILL.md used a list for `description`; now guarded with `typeof` check.
+- `preamble-tier` parsing: `parseInt()` could return `NaN` for invalid values; now coerced to `undefined`.
+
+### Security
+
+- Removed 159 auto-discovered private skill names from `matchers.json` in the public repo. Only the 28 hand-curated seed entries are committed. Auto-discovered entries are machine-local and must not be committed.
+
+### Documentation
+
+- Comprehensive README overhaul: clearer pain opener, prerequisites section, corrected install command (`bun run install`, not `bun install`), explicit testing examples, and removed internal file structure section.
+- Added 5 new language READMEs: Simplified Chinese (zh-CN), Korean (ko), Brazilian Portuguese (pt-BR), Indonesian (id), Vietnamese (vi).
+- Fixed `bun install` → `bun run install` in all 8 READMEs and INSTALL.md (`bun install` invokes bun's package manager; `bun run install` runs the project's install script).
+- Localized confidence labels and demo blocks in all language READMEs.
 
 ## [1.2.0] - 2026-04-04 — Learning, Repo-Mode Awareness, Visible Warnings
 
