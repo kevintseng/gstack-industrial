@@ -443,7 +443,23 @@ async function main() {
     ].join('\n');
   }
 
-  process.stdout.write(JSON.stringify({ additionalContext: suggestion }));
+  // Wrap in <router-suggestion> with explicit relay directive so Claude
+  // surfaces the suggestion to the user instead of treating it as silent
+  // guidance. Without this framing, Claude's tunnel-vision execute-mode
+  // (especially under auto-mode) routinely skips suggestions — they fire
+  // (suggestionsCount climbs) but the user never sees them in the chat UI.
+  const wrappedSuggestion = [
+    '<router-suggestion>',
+    suggestion,
+    '</router-suggestion>',
+    '',
+    'IMPORTANT: A skill router suggestion is shown above. Before responding to',
+    'the user, surface this suggestion verbatim (or summarize in one line) in',
+    'your reply so the user can choose to accept it. The suggestion is shown',
+    'to YOU first; the user only sees it if you relay it. Treat this as a',
+    'single line of attention, not a heavyweight intervention.',
+  ].join('\n');
+  process.stdout.write(JSON.stringify({ additionalContext: wrappedSuggestion }));
 
   // Element 3: save context snapshot so it can be injected when "yes" is received
   const savedContext: SavedContext = {
