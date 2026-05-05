@@ -2,6 +2,14 @@
 
 All notable changes to gstack-industrial.
 
+## [1.3.1] - 2026-05-06 — Suggestion Visibility Fix
+
+Patch release. Fixes a long-standing visibility issue where router suggestions fired correctly (the session-state counter incremented as expected) but Claude often skipped relaying them to the chat UI, especially under autonomous-execution modes. The result: users couldn't say "yes" to suggestions they never saw, so accepted/dismissed feedback skewed and the router appeared inactive.
+
+### Fixed
+
+- **Suggestion relay.** Router output is now wrapped in `<router-suggestion>...</router-suggestion>` delimiters with an explicit IMPORTANT directive instructing Claude to surface the suggestion verbatim (or in a one-line summary) before responding. Previously the suggestion was sent as raw `additionalContext`, which under autonomous-execution modes Claude treated as silent guidance and skipped. After this fix, every fired suggestion is visible in the chat reply, restoring the accept / decline / ignore loop.
+
 ## [1.3.0] - 2026-04-30 — Prompt Engineering, gstack Sync, i18n, Security
 
 gstack-industrial suggestions are now built on Anthropic's internal prompt engineering framework. When you say "yes", Claude receives a structured XML context block — not just a skill name. Each suggestion tells Claude *who* to be, *what context* it was made in, and *how* to execute — reducing the need to explain yourself twice.
